@@ -1,0 +1,25 @@
+﻿@page
+@model Twitter19.Pages.SignupModel
+@{
+}
+<div class="container border border-muted shadow loginContainer justify-content-center">
+    <h2>Login</h2>
+    <div class="mt-2">
+        <form method="post">
+            <div class="inputContainer">
+                <img src="~/perm_identity_black_24dp.svg" alt="Email" />
+                <input class="Input" placeholder="Username" type="text" asp-for="Email" />
+            </div>
+            <div class="inputContainer">
+                <img src="~/lock_black_24dp.svg" alt="Password" />
+                <input class="Input" placeholder="Password" type="password" asp-for="Password" />
+            </div>
+            <div class="inputContainer">
+                <img src="~/lock_black_24dp.svg" alt="Password" />
+                <input class="Input" placeholder="Password" type="password" asp-for="CPassword" />
+            </div>
+            <input type="submit" value="Login" class="d-block btn btn-primary mr-auto ml-auto mt-2" />
+            <a asp-page="Signup">Signup</a>
+        </form>
+    </div>
+</div>
