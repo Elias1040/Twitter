@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
 
 namespace Twitter19.Pages
 {
@@ -15,6 +16,11 @@ namespace Twitter19.Pages
         public string Email { get; set; }
         [BindProperty]
         public string Password { get; set; }
+        private readonly string connectionString;
+        public LoginModel(IConfiguration config) 
+        { 
+            connectionString = config.GetConnectionString("Default"); 
+        }
         public void OnGet()
         {
 
@@ -22,7 +28,7 @@ namespace Twitter19.Pages
         public IActionResult OnPost()
         {
             SqlConnection con = new SqlConnection(connectionString);
-            SqlCommand cmd = new SqlCommand("", con);
+            SqlCommand cmd = new SqlCommand("UserLogin", con);
             con.Open();
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -33,7 +39,7 @@ namespace Twitter19.Pages
                     return RedirectToPage("index");
                 }
             }
-                return Page();
+            return Page();
         }
     }
 }
