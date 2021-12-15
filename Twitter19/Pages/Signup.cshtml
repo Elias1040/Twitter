@@ -8,18 +8,21 @@
         <form method="post">
             <div class="inputContainer">
                 <img src="~/perm_identity_black_24dp.svg" alt="Email" />
-                <input class="Input" placeholder="Email" type="email" asp-for="Email" required />
+                <input class="Input" oninput="validationE(this.value)" placeholder="Email" type="email" asp-for="Email" required />
+                <img src="~/check.png" alt="Valid" height="24px" width="24px" id="email" class="d-none" />
             </div>
             <div class="inputContainer">
                 <img src="~/lock_black_24dp.svg" alt="Password" />
-                <input class="Input" oninput="validation(this.value)" placeholder="Password" type="password" asp-for="Password" id="psw" />
+                <input class="Input" oninput="validationP(this.value)" placeholder="Password" type="password" asp-for="Password" id="psw" />
+                <img src="~/check.png" alt="Valid" height="24px" width="24px" id="password" class="d-none" />
             </div>
             <div class="inputContainer">
-                <img src="~/lock_black_24dp.svg" alt="Password" />
-                <input class="Input" placeholder="Confirm password" type="password" asp-for="CPassword" required />
+                <img src="~/lock_black_24dp.svg" alt="Confirm password" />
+                <input class="Input" oninput="validationCP(this.value)" placeholder="Confirm password" type="password" asp-for="CPassword" required />
+                <img src="~/check.png" alt="Valid" height="24px" width="24px" id="cPassword" class="d-none" />
             </div>
             <div class="mt-4 mb-3">
-                <input type="submit" value="Signup" class="d-block btn btn-primary mr-auto ml-auto mt-2" />
+                <input type="submit" disabled id="SignupSubmit" value="Signup" class="d-block btn btn-primary mr-auto ml-auto mt-2" />
                 <a class="d-block m-2" asp-page="Login">Login</a>
             </div>
         </form>

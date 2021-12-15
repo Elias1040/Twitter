@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +30,11 @@ namespace Twitter19.Pages
         }
         public IActionResult OnPost()
         {
-            if (Password == CPassword)
+            //string special = @"/[!@#$%^&*()_+\-=\[\]{};':\\|,.<>\/?]/g";
+            Regex req = new Regex("[a-z][A-Z][0-9]");
+            bool valid = req.IsMatch(Password) && Password == CPassword && Password.Length >= 8 && Password.Length < 100;
+
+            if (valid)
             {
                 SqlConnection con = new SqlConnection(connectionString);
                 SqlCommand cmd = new SqlCommand("UserSignup", con);
@@ -48,7 +53,6 @@ namespace Twitter19.Pages
                     con.Close();
                     return Page();
                 }
-                //cmd.ExecuteNonQuery();
             }
             else
             {
