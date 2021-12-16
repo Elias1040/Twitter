@@ -1,11 +1,11 @@
-﻿var lower = /[a-z][A-Z][0-9]/g;
+﻿var lower = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])[a-zA-Z0-9]{8,100}$/;
 var emailVal = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 var valid1 = false;
 var valid2 = false;
 var valid3 = false;
 
 function validationE(input) {
-    if (input.match(emailVal) && input.length >= 8) {
+    if (input.match(emailVal)) {
         document.getElementById("email").src = "check.png"
         document.getElementById("email").setAttribute("width", "20px");
         document.getElementById("email").setAttribute("height", "20px");

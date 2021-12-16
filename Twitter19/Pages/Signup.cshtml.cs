@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -19,6 +19,7 @@ namespace Twitter19.Pages
         public string Password { get; set; }
         [BindProperty]
         public string CPassword { get; set; }
+        public bool exist { get; set; }
         private readonly string connectionString;
         public SignupModel(IConfiguration config)
         {
@@ -37,7 +38,7 @@ namespace Twitter19.Pages
             if (valid)
             {
                 SqlConnection con = new SqlConnection(connectionString);
-                SqlCommand cmd = new SqlCommand("UserSignup", con);
+                SqlCommand cmd = new SqlCommand("userSignup", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 con.Open();
                 cmd.Parameters.AddWithValue("@Email", Email);
@@ -45,11 +46,13 @@ namespace Twitter19.Pages
                 if (cmd.ExecuteNonQuery() == 1)
                 {
                     con.Close();
+                    exist = false;
                     HttpContext.Session.SetString("Logged in", "1");
                     return RedirectToPage("index");
                 }
                 else
                 {
+                    exist = true;
                     con.Close();
                     return Page();
                 }

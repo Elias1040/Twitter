@@ -147,3 +147,11 @@ input {
     height: 400px;
     outline: none;
 }
+
+.warning{
+    display: block;
+    padding: 10px;
+    background-color: rgba(242, 38, 19, 0.8);
+    border-radius: 10px;
+    color: white;
+}
