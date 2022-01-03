@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 
-namespace Twitter19.Pages
+namespace Twitter.Pages
 {
     public class SignupModel : PageModel
     {
@@ -32,8 +32,11 @@ namespace Twitter19.Pages
         public IActionResult OnPost()
         {
             //string special = @"/[!@#$%^&*()_+\-=\[\]{};':\\|,.<>\/?]/g";
-            Regex req = new Regex("[a-z][A-Z][0-9]");
-            bool valid = req.IsMatch(Password) && Password == CPassword && Password.Length >= 8 && Password.Length < 100;
+            //Regex req = new Regex(@"[a-z][A-Z][0-9]");
+            Regex lower = new Regex(@"[a-z]+");
+            Regex upper = new Regex(@"[A-Z]+");
+            Regex number = new Regex(@"[0-9]+");
+            bool valid = lower.IsMatch(Password) && upper.IsMatch(Password) && number.IsMatch(Password) && Password == CPassword && Password.Length >= 8 && Password.Length < 100;
 
             if (valid)
             {

@@ -4,3 +4,27 @@
     ViewData["Title"] = "Home page";
 }
 
+<div class="d-inline-flex flex-column justify-content-center mcontainer">
+    <div class="border rounded p-1 tweetCon d-block">
+        <div class="border-bottom">
+            <h4 class="d-block ml-2 mt-1">Home</h4>
+        </div>
+        <div>
+            <form method="post">
+                <div class="d-flex align-items-center mt-1">
+                    <img class="d-inline-block" src="#" alt="" height="75px" width="75px" />
+                    <textarea class="border-0 d-inline-block" placeholder="What's happening?" asp-for="tweet"></textarea>
+                </div>
+                <button type="submit" class="d-inline-block btn btn-info rounded-pill mr-3 mb-3 pl-4 pr-4 float-right">Tweet</button>
+            </form>
+        </div>
+    </div>
+    @foreach (var item in Model.tweets)
+    {
+        <div class="border rounded p-1 tweetCon d-block text-left">
+            <img class="d-inline-block" src="#" alt="" height="75px" width="75px" />
+            <h4 class="d-inline-block">@item</h4>
+        </div>
+    }
+
+</div>

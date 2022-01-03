@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 
-namespace Twitter19.Pages
+namespace Twitter.Pages
 {
     public class LoginModel : PageModel
     {
@@ -31,14 +31,17 @@ namespace Twitter19.Pages
             SqlCommand cmd = new SqlCommand("UserLogin", con);
             con.Open();
             SqlDataReader reader = cmd.ExecuteReader();
+
             while (reader.Read())
             {
-                if (reader.GetString(0) == Email && reader.GetString(1) == Password)
+                if (reader.GetString(1) == Email && reader.GetString(2) == Password)
                 {
                     HttpContext.Session.SetString("Logged in", "1");
+                    HttpContext.Session.SetInt32("ID", reader.GetInt32(0));
                     return RedirectToPage("index");
                 }
             }
+
             return Page();
         }
     }
