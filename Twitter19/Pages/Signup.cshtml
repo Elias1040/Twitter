@@ -16,6 +16,11 @@
                 <img src="~/check.png" alt="Valid" height="24px" width="24px" id="email" class="d-none" />
             </div>
             <div class="inputContainer">
+                <img src="~/perm_identity_black_24dp.svg" alt="Email" />
+                <input class="Input" oninput="fNameVal(this.value)" placeholder="Name" type="text" asp-for="Name" required />
+                <img src="~/check.png" alt="Valid" height="24px" width="24px" id="name" class="d-none" />
+            </div>
+            <div class="inputContainer">
                 <img src="~/lock_black_24dp.svg" alt="Password" />
                 <input class="Input" oninput="validationP(this.value)" placeholder="Password" type="password" asp-for="Password" id="psw" />
                 <img src="~/check.png" alt="Valid" height="24px" width="24px" id="password" class="d-none" />

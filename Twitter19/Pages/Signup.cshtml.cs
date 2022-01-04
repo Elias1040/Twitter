@@ -19,6 +19,9 @@ namespace Twitter.Pages
         public string Password { get; set; }
         [BindProperty]
         public string CPassword { get; set; }
+        [BindProperty]
+        public string Name { get; set; }
+        public int id { get; set; }
         public bool exist { get; set; }
         private readonly string connectionString;
         public SignupModel(IConfiguration config)
@@ -36,7 +39,7 @@ namespace Twitter.Pages
             Regex lower = new Regex(@"[a-z]+");
             Regex upper = new Regex(@"[A-Z]+");
             Regex number = new Regex(@"[0-9]+");
-            bool valid = lower.IsMatch(Password) && upper.IsMatch(Password) && number.IsMatch(Password) && Password == CPassword && Password.Length >= 8 && Password.Length < 100;
+            bool valid = lower.IsMatch(Password) && upper.IsMatch(Password) && number.IsMatch(Password) && Password == CPassword && Password.Length >= 8 && Password.Length < 100 && Name.Length > 0 && Name.Length < 100;
 
             if (valid)
             {
@@ -46,11 +49,14 @@ namespace Twitter.Pages
                 con.Open();
                 cmd.Parameters.AddWithValue("@Email", Email);
                 cmd.Parameters.AddWithValue("@Password", Password);
-                if (cmd.ExecuteNonQuery() == 1)
+                cmd.Parameters.AddWithValue("@Name", Name);
+                id = cmd.ExecuteNonQuery();
+                if (id != 0)
                 {
                     con.Close();
                     exist = false;
                     HttpContext.Session.SetString("Logged in", "1");
+                    HttpContext.Session.SetInt32("ID", id);
                     return RedirectToPage("index");
                 }
                 else

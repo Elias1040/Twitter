@@ -25,8 +25,8 @@ namespace Twitter
         {
             services.AddRazorPages();
             services.AddSession(options => {
-                options.IdleTimeout = TimeSpan.FromMinutes(30);
-                //options.IdleTimeout = TimeSpan.FromSeconds(30);
+                //options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.IdleTimeout = TimeSpan.FromSeconds(30);
             });
             services.AddScoped<Session>();
             services.AddMemoryCache();

@@ -6,11 +6,11 @@
 
 <div class="d-inline-flex flex-column justify-content-center mcontainer">
     <div class="border rounded p-1 tweetCon d-block">
-        <div class="border-bottom">
+        <div class="border-bottom text-left">
             <h4 class="d-block ml-2 mt-1">Home</h4>
         </div>
         <div>
-            <form method="post">
+            <form method="post" class="form">
                 <div class="d-flex align-items-center mt-1">
                     <img class="d-inline-block" src="#" alt="" height="75px" width="75px" />
                     <textarea class="border-0 d-inline-block" placeholder="What's happening?" asp-for="tweet"></textarea>
@@ -19,12 +19,17 @@
             </form>
         </div>
     </div>
-    @foreach (var item in Model.tweets)
+    @for (int i = Model.tweets.Count - 1; i >= 0; i--)
     {
-        <div class="border rounded p-1 tweetCon d-block text-left">
-            <img class="d-inline-block" src="#" alt="" height="75px" width="75px" />
-            <h4 class="d-inline-block">@item</h4>
+        <div class="border rounded p-1 tweetCon d-flex text-left align-items-lg-start">
+            <img class="d-inline-block border rounded-circle" src="~/photo4.jpg" alt="" height="75px" width="75px" />
+            <div class="d-inline-block ml-3 w-100">
+                <div class="d-block">
+                    <h5 class="d-inline-block">@Model.tweets[i].name</h5>
+                    <p class="d-inline-block float-right mr-2">@Model.tweets[i].date</p>
+                </div>
+                <h4 class="d-inline-block">@Model.tweets[i].message</h4>
+            </div>
         </div>
     }
-
 </div>

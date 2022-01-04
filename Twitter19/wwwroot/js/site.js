@@ -3,6 +3,30 @@ var emailVal = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[
 var valid1 = false;
 var valid2 = false;
 var valid3 = false;
+var valid4 = false;
+
+function fNameVal(input) {
+    if (input.length >= 100) {
+        document.getElementById("psw").value = input.slice(0, -1);
+    }
+    if (input.length > 0) {
+        document.getElementById("name").src = "check.png"
+        document.getElementById("name").setAttribute("width", "20px");
+        document.getElementById("name").setAttribute("height", "20px");
+        document.getElementById("name").setAttribute("style", "display: inline-block!important");
+        valid4 = true;
+    }
+    else if (input == 0) {
+        document.getElementById("email").setAttribute("style", "display: none!important");
+        valid4 = false
+    }
+    if (valid1 && valid2 && valid3) {
+        document.getElementById("SignupSubmit").removeAttribute("disabled");
+    }
+    else {
+        document.getElementById("SignupSubmit").setAttribute("disabled", true);
+    }
+}
 
 function validationE(input) {
     if (input.match(emailVal)) {
@@ -87,7 +111,7 @@ function validationCP(input) {
         valid3 = false;
     }
 
-    if (valid1 && valid2 && valid3) {
+    if (valid1 && valid2 && valid3 && valid4) {
         document.getElementById("SignupSubmit").removeAttribute("disabled");
     }
     else {
