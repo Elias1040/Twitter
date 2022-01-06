@@ -156,9 +156,60 @@ input {
     color: white;
 }
 
-.tweetCon {
+.postCon {
     height: 172px;
     width: 700px;
+}
+
+.tweetCon {
+    min-height: 150px;
+    width: 650px;
+}
+
+#delete {
+    display: none;
+    position: absolute;
+    right: 58px;
+    top: 8px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 100%;
+    width: 35px;
+    height: 35px;
+    border: none;
+    text-align: center;
+}
+
+.form-input img {
+    width: 100%;
+    display: none;
+    margin-bottom: 30px;
+}
+
+.form-input input {
+    display: none;
+}
+
+.form-input label {
+    margin-left: 85px;
+    display: inline-block;
+    text-align: center;
+    background-image: url(/broken_image_black_24dp.svg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    /*color: #fff;*/
+    aspect-ratio: 1/1;
+    height: 35px;
+    cursor: pointer;
+}
+
+#file-ip-1-preview {
+    max-height: 400px;
+    max-width: 500px;
+    display: none;
+    margin-left: 85px;
+    border-radius: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .mcontainer {
@@ -174,7 +225,15 @@ textarea {
     padding: 10px;
 }
 
+.tweetButton {
+    margin-right: 50px;
+}
+
 .form {
     height: 130px;
     padding-left: 5px;
+}
+
+.navCon {
+    margin-right: 100px;
 }

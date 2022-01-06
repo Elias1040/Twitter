@@ -26,6 +26,8 @@ namespace Twitter.Pages
 
         [BindProperty]
         public string tweet { get; set; }
+        [BindProperty]
+        public byte[] data { get; set; }
         public List<TweetPosts> tweets { get; set; }
 
 
@@ -52,28 +54,21 @@ namespace Twitter.Pages
                 LocalDate end = new LocalDate(date[i].Year, date[i].Month, date[i].Day);
                 if (DateTime.Now.Subtract(date[i]).TotalMinutes < 1)
                 {
-                    tweets[i].date = "now";
+                    tweets[i].date = "Now";
                 }
                 else if (DateTime.Now.Subtract(date[i]).TotalMinutes > 0 && DateTime.Now.Subtract(date[i]).TotalMinutes < 60)
                 {
-                    tweets[i].date = $"{((int)DateTime.Now.Subtract(date[i]).TotalMinutes)} Mins";
+                    tweets[i].date = $"{(int)DateTime.Now.Subtract(date[i]).TotalMinutes} Mins";
                 }
                 else if (DateTime.Now.Subtract(date[i]).Hours > 0 && DateTime.Now.Subtract(date[i]).Hours < 24)
                 {
-                    tweets[i].date = $"{((int)DateTime.Now.Subtract(date[i]).TotalHours)} Hours";
-                }
-                else if (Period.Between(start, end).Days > 0 && Period.Between(start, end).Days < DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month))
-                {
-                    tweets[i].date = $"{Period.Between(start, end).Days} Days";
-                }
-                else if (Period.Between(start, end).Months > 0 && Period.Between(start, end).Months < 12)
-                {
-                    tweets[i].date = $"{Period.Between(start, end).Months} Months";
+                    tweets[i].date = $"{(int)DateTime.Now.Subtract(date[i]).Hours} Hours";
                 }
                 else
                 {
-                    tweets[i].date = $"{Period.Between(start, end)} Years";
+                    tweets[i].date = $"{(int)DateTime.Now.Subtract(date[i]).TotalDays} Days";
                 }
+                
 
             }
             return session.LoggedIn();
@@ -89,14 +84,21 @@ namespace Twitter.Pages
 
         public IActionResult OnPost()
         {
-            SqlConnection con = new SqlConnection(connectionString);
-            SqlCommand cmd = new SqlCommand("CreateTweet", con);
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-            con.Open();
-            cmd.Parameters.AddWithValue("@tweet", tweet);
-            cmd.Parameters.AddWithValue("@user", HttpContext.Session.GetInt32("ID"));
-            cmd.ExecuteNonQuery();
-            return session.LoggedIn();
+            if (!session.IsLoggedIn())
+            {
+                return session.LoggedIn();
+            }
+            else
+            {
+                SqlConnection con = new SqlConnection(connectionString);
+                SqlCommand cmd = new SqlCommand("CreateTweet", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure; 
+                con.Open();
+                cmd.Parameters.AddWithValue("@tweet", tweet);
+                cmd.Parameters.AddWithValue("@user", HttpContext.Session.GetInt32("ID"));
+                cmd.ExecuteNonQuery();
+                return RedirectToPage("Index");
+            }
         }
     }
 }

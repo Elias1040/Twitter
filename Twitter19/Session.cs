@@ -30,6 +30,18 @@ namespace Twitter
             }
         }
 
+        public bool IsLoggedIn()
+        {
+            if (httpContext.Session.GetString("Logged in") == "1")
+            {
+                return true;
+            }
+            else
+            {
+                httpContext.Session.Remove("Logged in");
+                return false;
+            }
+        }
     }
 }
 

@@ -1,4 +1,5 @@
-﻿var lower = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])[a-zA-Z0-9]{8,100}$/;
+﻿//#region validation
+var lower = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])[a-zA-Z0-9]{8,100}$/;
 var emailVal = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 var valid1 = false;
 var valid2 = false;
@@ -117,4 +118,41 @@ function validationCP(input) {
     else {
         document.getElementById("SignupSubmit").setAttribute("disabled", true);
     }
+}
+//#endregion
+$("#post").keypress(function (e) {
+    if(e.which === 13 && !e.shiftKey) {
+        e.preventDefault();
+    
+        $(this).closest("form").submit();
+    }
+});
+
+function showPreview(event){
+    if(event.target.files.length > 0){
+      var src = URL.createObjectURL(event.target.files[0]);
+      var preview = document.getElementById("file-ip-1-preview");
+      var deletePre = document.getElementById("delete");
+      preview.src = src;
+      preview.style.display = "block";
+      deletePre.style.display = "block";
+    }
+  }
+
+  function hidePreview(){  
+      var preview = document.getElementById("file-ip-1-preview");
+      var deletePre = document.getElementById("delete");
+      var imgInput = document.getElementById("file-ip-1");
+      preview.style.display = "none";
+      deletePre.style.display = "none"
+      imgInput.value = "";
+      preview.src = "";
+  }
+
+  function showButton(element){
+      element.style.display = "block";
+  }
+ 
+  function hideButton(element){
+    element.style.display = "none";
 }
