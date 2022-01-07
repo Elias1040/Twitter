@@ -10,7 +10,7 @@
             <h4 class="d-block ml-2 mt-1">Home</h4>
         </div>
         <div>
-            <form method="post" class="form">
+            <form method="post" class="form" enctype="multipart/form-data">
                 <div class="border-bottom pb-3">
                     <img class="d-inline-block rounded-circle" src="~/photo4.jpg" alt="" height="75px" width="75px" />
                     <div class="d-inline-flex align-items-center mt-1">
@@ -23,26 +23,64 @@
                 </div>
                 <div class="form-input mt-2">
                     <label for="file-ip-1"></label>
-                    <input type="file" asp-for="data" id="file-ip-1" accept="image/*" onchange="showPreview(event);">
+                    <input type="file" asp-for="img" id="file-ip-1" accept="image/*" onchange="showPreview(event);">
                     <button type="submit" class="d-inline-block btn btn-info rounded-pill mb-3 pl-4 pr-4 float-right tweetButton">Tweet</button>
                     @*<button type="button" onclick="hidePreview()" class="d-inline-block btn btn-info rounded-pill mr-3 mb-3 pl-4 pr-4 float-right">Delete Picture</button>*@
                 </div>
             </form>
         </div>
     </div>
-    <div class="border mt-3" style="width: 650px">
-        @for (int i = Model.tweets.Count - 1; i >= 0; i--)
-        {
-            <div class=" p-1 tweetCon d-flex text-left align-items-lg-start border-bottom border-top">
-                <img class="d-inline-block border rounded-circle mt-2 ml-2" src="~/photo4.jpg" alt="" height="75px" width="75px" />
-                <div class="d-inline-block ml-4 mt-2 w-100">
-                    <div class="d-block">
+    <div class="p-1 d-block tweetCon">
+        <div class="border mt-3" style="width: 650px">
+            @for (int i = Model.tweets.Count - 1; i >= 0; i--)
+            {
+                <div class="text-left mb-3">
+                </div>
+                <div>
+                    <div class="border-bottom pb-3">
+                        <img class="d-inline-block rounded-circle" src="~/photo4.jpg" alt="" height="75px" width="75px" />
                         <h5 class="d-inline-block">@Model.tweets[i].name</h5>
                         <p class="d-inline-block float-right mr-2" style="color: darkgray; font-weight: 600; font-size: 17px;">@Model.tweets[i].date</p>
+                        <div class="d-inline-flex align-items-center mt-1">
+                            <p class="d-inline-block">@Model.tweets[i].message</p>
+                        </div>
+                        <div class="preview position-relative">
+                            @if (Model.tweets[i].image != null)
+                            {
+                                <img src="data:image/png;base64, @Model.tweets[i].image" class="file-preview" height="@Model.tweets[i].dimensions.Split('h')[1]px" width="@Model.tweets[i].dimensions.Split('w')[1].Split(' ')[0]px" id="image" />
+                            }
+                        </div>
                     </div>
-                    <p class="d-inline-block">@Model.tweets[i].message</p>
+                    <div class="form-input mt-2 border-bottom mb-2">
+                        <!-- Button trigger modal -->
+                        <button type="button" class="d-inline-block btn btn-info rounded-pill mb-3 pl-4 pr-4 float-right tweetButton" data-toggle="modal" data-target="#exampleModalLong">Comments</button>
+                    </div>
                 </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-        }
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
     </div>
 </div>

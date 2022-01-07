@@ -212,6 +212,16 @@ input {
     margin-bottom: 20px;
 }
 
+.file-preview {
+    max-height: 400px;
+    max-width: 500px;
+    display: block;
+    margin-left: 85px;
+    border-radius: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
 .mcontainer {
     width: 700px;
     margin: 0;

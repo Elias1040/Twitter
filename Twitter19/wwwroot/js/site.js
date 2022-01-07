@@ -120,6 +120,7 @@ function validationCP(input) {
     }
 }
 //#endregion
+//#region show/hide image
 $("#post").keypress(function (e) {
     if(e.which === 13 && !e.shiftKey) {
         e.preventDefault();
@@ -156,3 +157,16 @@ function showPreview(event){
   function hideButton(element){
     element.style.display = "none";
 }
+//#endregion
+// var base64string = document.getElementById("image").src;
+// var cleanBase64 = base64string.slice(22);
+// var decode = atob(cleanBase64);
+// console.log(cleanBase64);
+// console.log(decode);
+
+//#region modal
+$('#myModal').on('shown.bs.modal', function () {
+    $('#myInput').trigger('focus')
+})
+
+//#endregion
