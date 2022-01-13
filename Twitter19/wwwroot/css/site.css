@@ -216,10 +216,24 @@ input {
     max-height: 400px;
     max-width: 500px;
     display: block;
-    margin-left: 85px;
+    margin-left: 90px;
     border-radius: 20px;
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+.file-preview2 {
+    max-height: 150px;
+    max-width: 300px;
+    display: block;
+    margin-left: 90px;
+    border-radius: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.css-table .tablerow:nth-child(even) {
+    background-color: #fcfcfc;
 }
 
 .mcontainer {
@@ -236,7 +250,7 @@ textarea {
 }
 
 .tweetButton {
-    margin-right: 50px;
+    margin-right: 60px;
 }
 
 .form {
@@ -245,5 +259,6 @@ textarea {
 }
 
 .navCon {
-    margin-right: 100px;
+    /*margin-right: 50px;*/
+    width: 277.31px;
 }

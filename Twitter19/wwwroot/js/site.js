@@ -165,8 +165,29 @@ function showPreview(event){
 // console.log(decode);
 
 //#region modal
-$('#myModal').on('shown.bs.modal', function () {
-    $('#myInput').trigger('focus')
-})
+// $('#myModal').on('shown.bs.modal', function () {
+//     $('#myInput').trigger('focus')
+// })
 
+
+// function load(idk){
+//     if (idk != null) {
+//         $('#myModal').modal('show');
+//     }
+//     else{
+//         console.log("empty")
+//     }
+// }
 //#endregion
+
+$(document).ready(function () {
+
+    if (localStorage.getItem("my_app_name_here-quote-scroll") != null) {
+        $(window).scrollTop(localStorage.getItem("my_app_name_here-quote-scroll"));
+    }
+
+    $(window).on("scroll", function() {
+        localStorage.setItem("my_app_name_here-quote-scroll", $(window).scrollTop());
+    });
+
+  });
