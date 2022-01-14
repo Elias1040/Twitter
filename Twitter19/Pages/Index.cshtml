@@ -48,7 +48,7 @@
                         @if (Model.tweets[i].image != null)
                         {
                             <div class="preview position-relative">
-                                <img src="data:image/png;base64, @Model.tweets[i].image" class="file-preview" height="@Model.tweets[i].dimensions.Split('h')[1]px" width="@Model.tweets[i].dimensions.Split('w')[1].Split(' ')[0]px" id="image" />
+                                <img src="data:image/png;base64, @Model.tweets[i].image" class="file-preview" id="image" />
                             </div>
                         }
                         <div class="form-input mt-2 mb-2 text-right mr-4" style="height: 30px;">
@@ -88,7 +88,7 @@
                                 @if (Model.cImage != null)
                                 {
                                     <div class="preview position-relative">
-                                        <img src="data:image/png;base64, @Model.cImage" class="file-preview2" height="@Model.cDimensions.Split('h')[1]px" width="@Model.cDimensions.Split('w')[1].Split(' ')[0]px" id="image" />
+                                        <img src="data:image/png;base64, @Model.cImage" class="file-preview2" id="image" />
                                     </div>
                                 }
                             </div>

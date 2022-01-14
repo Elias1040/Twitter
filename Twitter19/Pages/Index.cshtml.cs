@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -59,6 +60,14 @@ namespace Twitter.Pages
 
         }
 
+        public class ImageResize
+        {
+            public Image Resizer(Image img, Size size)
+            {
+                return (Image)new Bitmap(img, size);
+            }
+        }
+
         public IActionResult OnGet(string id)
         {
             #region OnGet1
@@ -85,8 +94,21 @@ namespace Twitter.Pages
                 {
                     byte[] a = (byte[])reader[4];
                     MemoryStream ms = new MemoryStream(a);
-                    tweetPost.image = Convert.ToBase64String(a);
-                    tweetPost.dimensions = reader.GetString(5);
+                    Image img = Image.FromStream(ms);
+                    if (img.Width >= 500 || img.Height >= 500)
+                    {
+                        ImageResize imgRe = new ImageResize();
+                        Image reImg = imgRe.Resizer(new Bitmap(img), new Size(500, 400));
+                        ms.Close();
+                        ms = new MemoryStream();
+                        reImg.Save(ms, ImageFormat.Png);
+                        tweetPost.image = Convert.ToBase64String(ms.ToArray());
+                    }
+                    else
+                    {
+                        tweetPost.image = Convert.ToBase64String(a);
+                    }
+                    //tweetPost.dimensions = reader.GetString(5);
                 }
                 catch (Exception)
                 {
@@ -136,8 +158,20 @@ namespace Twitter.Pages
                     {
                         byte[] a = (byte[])reader[2];
                         MemoryStream ms = new MemoryStream(a);
-                        cImage = Convert.ToBase64String(a);
-                        cDimensions = reader.GetString(3);
+                        Image img = Image.FromStream(ms);
+                        if (img.Width >= 500 || img.Height >= 500)
+                        {
+                            ImageResize imgRe = new ImageResize();
+                            Image reImg = imgRe.Resizer(new Bitmap(img), new Size(500, 400));
+                            ms.Close();
+                            ms = new MemoryStream();
+                            reImg.Save(ms, ImageFormat.Png);
+                            cImage = Convert.ToBase64String(ms.ToArray());
+                        }
+                        else
+                        {
+                            cImage = Convert.ToBase64String(a);
+                        }
                     }
                     catch (Exception)
                     {
@@ -166,11 +200,12 @@ namespace Twitter.Pages
             }
             #endregion
             #region OnGet3
+            string test = HttpContext.Session.GetString("tweetID");
             if (HttpContext.Session.GetString("tweetID") != null)
             {
                 cmd = new SqlCommand("GetComments", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@id", HttpContext.Session.GetString("tweetID"));
                 comments = new List<TweetComments>();
                 List<DateTime> CDate = new List<DateTime>();
                 reader = cmd.ExecuteReader();
@@ -238,7 +273,6 @@ namespace Twitter.Pages
 #pragma warning disable CA1416 // Validate platform compatibility
                         Image image = Image.FromStream(ms);
                         cmd.Parameters.AddWithValue("@imagebytes", data);
-                        cmd.Parameters.AddWithValue("@dimensions", $"w{image.Width} h{image.Height}");
 #pragma warning restore CA1416 // Validate platform compatibility
                     }
                     catch (Exception)

@@ -2,9 +2,34 @@
 @model Twitter19.Pages.ProfileModel
 @{
 }
-<div class="d-inline-flex mcontainer border">
-    <div class="text-left mb-3">
-        <h4 class="d-block ml-2 mt-1">Name</h4>
-        <span>0 tweets</span>
+<div class="mcontainer border">
+    <div class="text-left mb-3 d-block">
+        <h4 class="d-block ml-2 mt-1">Name <span class="badge badge-secondary" style="font-size: .55em">0 Tweets</span></h4>
+    </div>
+    <div class="w-100 d-block">
+        <img src="" class="w-100 bg-secondary" height="200" />
+        <div style="" class="d-block">
+            <img src="~/perm_identity_black_24dp.svg" height="125" width="125" class="rounded-circle border border-dark position-relative" style="margin-top: -9%" />
+            <button type="button" class="float-right btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop>Set up profile</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Understood</button>
+            </div>
+        </div>
     </div>
 </div>

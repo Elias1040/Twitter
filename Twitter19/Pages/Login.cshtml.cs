@@ -23,7 +23,7 @@ namespace Twitter.Pages
         }
         public void OnGet()
         {
-
+            HttpContext.Session.Remove("tweetID");
         }
         public IActionResult OnPost()
         {
