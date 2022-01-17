@@ -24,7 +24,7 @@
                 </div>
                 <div class="form-input mt-2">
                     <label for="file-ip-1"></label>
-                    <input type="file" asp-for="img" id="file-ip-1" accept="image/*" onchange="showPreview(event);">
+                    <input type="file" asp-for="img" id="file-ip-1" accept="image/*" onchange="showPreview(event, this.id);">
                     <button type="submit" class="d-inline-block btn btn-info rounded-pill mb-3 pl-4 pr-4 float-right tweetButton">Tweet</button>
                     @*<button type="button" onclick="hidePreview()" class="d-inline-block btn btn-info rounded-pill mr-3 mb-3 pl-4 pr-4 float-right">Delete Picture</button>*@
                 </div>
@@ -119,18 +119,10 @@
 
 
 <script type="text/javascript">
+
 window.onload = function () {
     load(@Model.tweetID)
-};
-function load(idk) {
-    if (idk != null) {
-        console.log(idk)
-        $('#exampleModalLong').modal('show');
-    }
-    else {
-        console.log("empty")
-    }
-}
+    };
 
 //#region urlmodify
     /*

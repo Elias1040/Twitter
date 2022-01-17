@@ -1,4 +1,15 @@
-﻿//#region validation
+$(document).ready(function () {
+    if (localStorage.getItem("my_app_name_here-quote-scroll") != null) {
+        $(window).scrollTop(localStorage.getItem("my_app_name_here-quote-scroll"));
+    }
+
+    $(window).on("scroll", function() {
+        localStorage.setItem("my_app_name_here-quote-scroll", $(window).scrollTop());
+    });
+
+  });
+  
+//#region validation
 var lower = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])[a-zA-Z0-9]{8,100}$/;
 var emailVal = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 var valid1 = false;
@@ -129,10 +140,10 @@ $("#post").keypress(function (e) {
     }
 });
 
-function showPreview(event){
+function showPreview(event, id){
     if(event.target.files.length > 0){
       var src = URL.createObjectURL(event.target.files[0]);
-      var preview = document.getElementById("file-ip-1-preview");
+      var preview = document.getElementById(id + "-preview");
       var deletePre = document.getElementById("delete");
       preview.src = src;
       preview.style.display = "block";
@@ -165,9 +176,22 @@ function showPreview(event){
 // console.log(decode);
 
 //#region modal
-// $('#myModal').on('shown.bs.modal', function () {
-//     $('#myInput').trigger('focus')
+// var myModal = document.getElementById('exampleModal')
+// var myInput = document.getElementById('myInput')
+
+// myModal.addEventListener('shown.bs.modal', function () {
+//   myInput.focus()
 // })
+
+function load(idk) {
+    if (idk != null) {
+        console.log(idk)
+        $('#exampleModalLong').modal('show');
+    }
+    else {
+        console.log("empty")
+    }
+}
 
 
 // function load(idk){
@@ -180,14 +204,3 @@ function showPreview(event){
 // }
 //#endregion
 
-$(document).ready(function () {
-
-    if (localStorage.getItem("my_app_name_here-quote-scroll") != null) {
-        $(window).scrollTop(localStorage.getItem("my_app_name_here-quote-scroll"));
-    }
-
-    $(window).on("scroll", function() {
-        localStorage.setItem("my_app_name_here-quote-scroll", $(window).scrollTop());
-    });
-
-  });

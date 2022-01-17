@@ -7,29 +7,68 @@
         <h4 class="d-block ml-2 mt-1">Name <span class="badge badge-secondary" style="font-size: .55em">0 Tweets</span></h4>
     </div>
     <div class="w-100 d-block">
-        <img src="" class="w-100 bg-secondary" height="200" />
+        <img src="" onerror="this.src='/Untitled.png'" class="w-100" height="200" />
         <div style="" class="d-block">
-            <img src="~/perm_identity_black_24dp.svg" height="125" width="125" class="rounded-circle border border-dark position-relative" style="margin-top: -9%" />
-            <button type="button" class="float-right btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop>Set up profile</button>
+            <img src="" onerror="this.src='/perm_identity_black_24dp.svg'" height="125" width="125" class="bg-white rounded-circle border border-dark position-relative ml-4" style="margin-top: -9%; border-width: 2px!important;" />
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#exampleModal">
+                Edit profile
+            </button>
         </div>
     </div>
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="modal-body">
-                ...
+            <div class="modal-body h-50">
+                <div class="d-flex">
+                    <div class="d-inline-block ml-2 w-100">
+                        <div class="text-center" style="width: 150px;">
+                            <span class="badge badge-secondary mb-2" style="font-size: 1em">Profile picture</span>
+                        </div>
+                        <div class="parent" style="height: 150px">
+                            <div class="child child1">
+                                <img id="file-ip-1-preview" onerror="this.src='/Untitled.png'" width="150" height="150" class="file-preview-custom m-0 d-inline-block rounded-circle" />
+                            </div>
+                            <div class="child child2">
+                                <label for="file-ip-1" class="rounded-circle d-flex justify-content-center align-items-center border border-dark" style="border-width: 2px !important;"><i class="bi bi-images text-white h4 icon"></i></label>
+                                <input type="file" asp-for="img" id="file-ip-1" accept="image/*" onchange="showPreview(event, this.id);">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-inline-block mr-2 w-50">
+                        <div class="text-center w-100">
+                            <span class="badge badge-secondary mb-2" style="font-size: 1em">Header</span>
+                        </div>
+                        <div class="parent" style="height: 150px">
+                            <div class="child child1">
+                                <img id="file-ip-2-preview" width="150" height="150" class="file-preview-custom m-0 d-inline-block" />
+                            </div>
+                            <div class="child child2">
+                                <label for="file-ip-2" class="d-flex justify-content-center align-items-center border border-dark" style="border-width: 2px!important;"><i class="bi bi-images text-white h4 icon"></i></label>
+                                <input type="file" asp-for="img" id="file-ip-2" accept="image/*" onchange="showPreview(event, this.id);">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="w-100 border-top border-bottom">
+                <label class="badge badge-secondary ml-2 mt-2" style="font-size: .90em" for="bio">Your bio</label>
+                <textarea id="bio" class="border-0 w-100 pl-4 mt-2 mb-2 pt-2 pb-2 h5"></textarea>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Understood</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
 </div>
+

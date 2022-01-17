@@ -262,3 +262,52 @@ textarea {
     /*margin-right: 50px;*/
     width: 277.31px;
 }
+
+
+.parent label {
+    /*margin-left: 85px;*/
+    display: inline-block;
+    text-align: center;
+    /*background-image: url(/broken_image_black_24dp.svg);*/
+    background-repeat: no-repeat;
+    background-position: center;
+    /* color: #fff; */
+    aspect-ratio: 1/1;
+    height: 150px;
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.parent input {
+    display: none;
+}
+
+.child {
+    position: absolute;
+    top: 0;
+    display: inline-block;
+}
+
+.child-1 {
+    left: 0;
+}
+
+.child-2 {
+    left: 0;
+}
+
+.parent {
+    position: relative;
+}
+
+.icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 100%;
+    background-position: center;
+    margin: 0!important;
+}
+
+.icon:hover {
+    background-color: rgba(255,255,255,0.3)
+}
