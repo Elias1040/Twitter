@@ -255,35 +255,31 @@ namespace Twitter.Pages
             {
                 return session.LoggedIn();
             }
-            else
+            if (tweet != null)
             {
-                if (tweet != null)
+                SqlConnection con = new SqlConnection(connectionString);
+                SqlCommand cmd = new SqlCommand("CreateTweet", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                con.Open();
+                cmd.Parameters.AddWithValue("@tweet", tweet);
+                cmd.Parameters.AddWithValue("@user", HttpContext.Session.GetInt32("ID"));
+                try
                 {
-                    SqlConnection con = new SqlConnection(connectionString);
-                    SqlCommand cmd = new SqlCommand("CreateTweet", con);
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@tweet", tweet);
-                    cmd.Parameters.AddWithValue("@user", HttpContext.Session.GetInt32("ID"));
-                    try
-                    {
-                        MemoryStream ms = new MemoryStream();
-                        img.CopyTo(ms);
-                        byte[] data = ms.ToArray();
-#pragma warning disable CA1416 // Validate platform compatibility
-                        Image image = Image.FromStream(ms);
-                        cmd.Parameters.AddWithValue("@imagebytes", data);
-#pragma warning restore CA1416 // Validate platform compatibility
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                    cmd.ExecuteNonQuery();
-                    con.Close();
+                    MemoryStream ms = new MemoryStream();
+                    img.CopyTo(ms);
+                    byte[] data = ms.ToArray();
+                    Image image = Image.FromStream(ms);
+                    cmd.Parameters.AddWithValue("@imagebytes", data);
                 }
-                return RedirectToPage("Index");
+                catch (Exception)
+                {
+
+                }
+                cmd.ExecuteNonQuery();
+                con.Close();
             }
+            return RedirectToPage("Index");
+
         }
 
         public IActionResult OnPostComment()
