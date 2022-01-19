@@ -51,7 +51,7 @@ namespace Twitter.Pages
                 cmd.Parameters.AddWithValue("@Password", Password);
                 cmd.Parameters.AddWithValue("@Name", Name);
                 id = cmd.ExecuteNonQuery();
-                if (id != 0)
+                if (id != -1)
                 {
                     con.Close();
                     exist = false;
@@ -66,10 +66,7 @@ namespace Twitter.Pages
                     return Page();
                 }
             }
-            else
-            {
-                return Page();
-            }
+            return Page();
         }
     }
 }

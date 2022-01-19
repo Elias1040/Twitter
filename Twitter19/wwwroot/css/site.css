@@ -1,6 +1,4 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
+﻿/*#region preStyle*/
 a.navbar-brand {
     white-space: normal;
     text-align: center;
@@ -72,7 +70,9 @@ body {
     white-space: nowrap;
     line-height: 60px; /* Vertically center the text there */
 }
+/*#endregion*/
 
+/*#region login/signup*/
 .MailPanel {
     background-color: rgba(255, 255, 204, 0.4)
 }
@@ -97,7 +97,7 @@ body {
 }
 
 .loginContainer {
-    max-height: 400px !important;
+    /*max-height: 400px !important;*/
     min-height: 300px !important;
     min-width: 250px !important;
     max-width: 300px !important;
@@ -105,48 +105,27 @@ body {
 }
 
 .inputContainer {
-    display: block;
-    margin: auto;
+    display: flex;
+    /*margin: auto;*/
     margin-top: 30px;
-    min-width: 80%;
+    /*min-width: 80%;*/
     max-width: 90%;
     text-align: left;
-}
 
-form {
-    width: 100%;
-}
-
-input {
-    outline: none;
 }
 
 .Input {
     border: none;
     border-bottom: 2px solid darkgray;
-    width: 160px;
+    width: 190px;
     transition: width 0.25s;
+    font-size: 20px;
 }
 
     .Input:focus {
-        width: 175px;
+        width: 210px;
         border-color: black;
     }
-
-.header {
-    font-weight: 500;
-    font-size: 18px;
-}
-
-.from {
-    font-size: 15px;
-    color: gray;
-}
-
-.InputMessage {
-    height: 400px;
-    outline: none;
-}
 
 .warning {
     display: block;
@@ -155,15 +134,17 @@ input {
     border-radius: 10px;
     color: white;
 }
+/*#endregion*/
 
-.postCon {
-    height: 172px;
-    width: 700px;
+/*#region tweet*/
+.InputMessage {
+    height: 400px;
+    outline: none;
 }
 
 .tweetCon {
     min-height: 150px;
-    width: 650px;
+    width: 656px;
 }
 
 #delete {
@@ -202,6 +183,16 @@ input {
     cursor: pointer;
 }
 
+.css-table .tablerow:nth-child(even) {
+    background-color: #fcfcfc;
+}
+
+.tweetButton {
+    margin-right: 60px;
+}
+/*#endregion*/
+
+/*#region file*/
 #file-ip-1-preview {
     max-height: 400px;
     max-width: 500px;
@@ -231,53 +222,10 @@ input {
     margin-top: 20px;
     margin-bottom: 20px;
 }
+/*#endregion*/
 
-.css-table .tablerow:nth-child(even) {
-    background-color: #fcfcfc;
-}
-
-.mcontainer {
-    width: 700px;
-    margin: 0;
-}
-
-textarea {
-    outline: none;
-    resize: none;
-    width: 590px;
-    height: 50px;
-    padding: 10px;
-}
-
-.tweetButton {
-    margin-right: 60px;
-}
-
-.form {
-    height: 130px;
-    padding-left: 5px;
-}
-
-.navCon {
-    /*margin-right: 50px;*/
-    width: 277.31px;
-}
-
-
-.parent label {
-    /*margin-left: 85px;*/
-    display: inline-block;
-    text-align: center;
-    /*background-image: url(/broken_image_black_24dp.svg);*/
-    background-repeat: no-repeat;
-    background-position: center;
-    /* color: #fff; */
-    aspect-ratio: 1/1;
-    height: 150px;
-    cursor: pointer;
-    background-color: rgba(0,0,0,0.4);
-}
-
+/*#region profile*/
+/*#region parent/child*/
 .parent input {
     display: none;
 }
@@ -300,6 +248,25 @@ textarea {
     position: relative;
 }
 
+.parent label {
+    /*margin-left: 85px;*/
+    display: inline-block;
+    text-align: center;
+    /*background-image: url(/broken_image_black_24dp.svg);*/
+    background-repeat: no-repeat;
+    background-position: center;
+    /* color: #fff; */
+    aspect-ratio: 1/1;
+    height: 150px;
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.4);
+}
+/*#endregion*/
+
+#bio {
+    height: 100px;
+}
+
 .icon {
     width: 34px;
     height: 34px;
@@ -311,3 +278,38 @@ textarea {
 .icon:hover {
     background-color: rgba(255,255,255,0.3)
 }
+/*#endregion*/
+
+/*#region other*/
+form {
+    width: 100%;
+}
+
+input {
+    outline: none;
+}
+
+.mcontainer {
+    width: 700px;
+    margin: 0;
+}
+
+textarea {
+    outline: none;
+    resize: none;
+    width: 590px;
+    height: 50px;
+    padding: 10px;
+}
+
+.navCon {
+    /*margin-right: 50px;*/
+    width: 277.31px;
+}
+
+pre {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+}
+/*#endregion*/

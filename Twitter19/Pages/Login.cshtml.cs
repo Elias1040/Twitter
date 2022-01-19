@@ -23,7 +23,12 @@ namespace Twitter.Pages
         }
         public void OnGet()
         {
-            HttpContext.Session.Remove("tweetID");
+            if (HttpContext.Session.GetString("Logged in") == "1")
+            {
+                HttpContext.Session.Remove("Logged in");
+                HttpContext.Session.Remove("ID");
+                HttpContext.Session.Remove("tweetID");
+            }
         }
         public IActionResult OnPost()
         {
@@ -38,10 +43,9 @@ namespace Twitter.Pages
                 {
                     HttpContext.Session.SetString("Logged in", "1");
                     HttpContext.Session.SetInt32("ID", reader.GetInt32(0));
-                    return RedirectToPage("index");
+                    return RedirectToPage("Index");
                 }
             }
-
             return Page();
         }
     }

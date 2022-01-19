@@ -1,13 +1,13 @@
-$(document).ready(function () {
-    if (localStorage.getItem("my_app_name_here-quote-scroll") != null) {
-        $(window).scrollTop(localStorage.getItem("my_app_name_here-quote-scroll"));
-    }
+// $(document).ready(function () {
+//     if (localStorage.getItem("my_app_name_here-quote-scroll") != null) {
+//         $(window).scrollTop(localStorage.getItem("my_app_name_here-quote-scroll"));
+//     }
 
-    $(window).on("scroll", function() {
-        localStorage.setItem("my_app_name_here-quote-scroll", $(window).scrollTop());
-    });
+//     $(window).on("scroll", function() {
+//         localStorage.setItem("my_app_name_here-quote-scroll", $(window).scrollTop());
+//     });
 
-  });
+//   });
   
 //#region validation
 var lower = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])[a-zA-Z0-9]{8,100}$/;

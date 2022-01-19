@@ -2,7 +2,7 @@
 @model Twitter.Pages.SignupModel
 @{
 }
-<div class="container border border-muted shadow loginContainer justify-content-center">
+@*<div class="container border border-muted shadow loginContainer justify-content-center">
     <h2 class="m-3">Signup</h2>
     <div class="mt-3">
         @if (Model.exist)
@@ -37,3 +37,49 @@
         </form>
     </div>
 </div>
+    *@
+
+
+<div class="container border border-muted shadow loginContainer" style="width: 450px!important; max-width: 500px!important; ">
+        <div class="m-3">
+            <h2 class="d-inline-block">Signup</h2>
+        </div>
+        <div class="mt-3 d-flex justify-content-center m-auto">
+            @if (Model.exist)
+            {
+                <span class="warning">Email is already in use!</span>
+            }
+            <form method="post">
+                <div class="d-block ">
+                    <div class="d-block text-center">
+                        <div class="d-inline-block" style="width: 250px;">
+                            <div class="inputContainer">
+                                <img src="~/perm_identity_black_24dp.svg" alt="Email" />
+                                <input class="Input" oninput="validationE(this.value)" placeholder="Email" type="email" asp-for="Email" required />
+                                <img src="~/check.png" alt="Valid" height="24px" width="24px" id="email" class="d-none" />
+                            </div>
+                            <div class="inputContainer">
+                                <img src="~/perm_identity_black_24dp.svg" alt="Email" />
+                                <input class="Input" oninput="fNameVal(this.value)" placeholder="Name" type="text" asp-for="Name" required />
+                                <img src="~/check.png" alt="Valid" height="24px" width="24px" id="name" class="d-none" />
+                            </div>
+                            <div class="inputContainer">
+                                <img src="~/lock_black_24dp.svg" alt="Password" />
+                                <input class="Input" oninput="validationP(this.value)" placeholder="Password" type="password" asp-for="Password" id="psw" />
+                                <img src="~/check.png" alt="Valid" height="24px" width="24px" id="password" class="d-none" />
+                            </div>
+                            <div class="inputContainer">
+                                <img src="~/lock_black_24dp.svg" alt="Confirm password" />
+                                <input class="Input" oninput="validationCP(this.value)" placeholder="Confirm password" type="password" asp-for="CPassword" required />
+                                <img src="~/check.png" alt="Valid" height="24px" width="24px" id="cPassword" class="d-none" />
+                            </div>
+                            <div class="mt-4 d-block">
+                                <input type="submit" value="Signup" class="d-block btn btn-primary mr-auto ml-auto mt-3 float-right" />
+                            </div>
+                        </div>
+                    </div>
+                    <a class="d-block m-2 mb-4" asp-page="Login">Login</a>
+                </div>
+            </form>
+        </div>
+    </div>

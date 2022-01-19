@@ -33,27 +33,27 @@
     </div>
     <div class="p-1 d-block tweetCon">
         <div class="border mt-3 css-table" style="width: 650px">
-            @for (int i = 0; i < Model.tweets.Count; i++)
+            @for (int i = 0; i < Model.posts.Count; i++)
             {
                 <div class="tablerow">
                     <div class="border-bottom pb-3">
                         <img class="d-inline-block rounded-circle ml-2 mt-2" src="~/photo4.jpg" alt="" height="75px" width="75px" />
                         <div class="d-inline-flex flex-column ml-2">
-                            <h5 class="d-inline-block">@Model.tweets[i].name</h5>
+                            <h4 class="d-inline-block">@Model.posts[i].name</h4>
                             <div class="d-inline-flex align-items-center mt-1">
-                                <p class="d-inline-block">@Model.tweets[i].message</p>
+                                <pre class="d-inline-block">@Model.posts[i].message</pre>
                             </div>
                         </div>
-                        <p class="d-inline-block float-right mr-2" style="color: darkgray; font-weight: 600; font-size: 17px;">@Model.tweets[i].date</p>
-                        @if (Model.tweets[i].image != null)
+                        <p class="d-inline-block float-right mr-2" style="color: darkgray; font-weight: 600; font-size: 17px;">@Model.posts[i].date</p>
+                        @if (Model.posts[i].image != null)
                         {
                             <div class="preview position-relative">
-                                <img src="data:image/png;base64, @Model.tweets[i].image" class="file-preview" id="image" />
+                                <img src="data:image/png;base64, @Model.posts[i].image" class="file-preview" id="image" />
                             </div>
                         }
                         <div class="form-input mt-2 mb-2 text-right mr-4" style="height: 30px;">
                             <!-- Button trigger modal -->
-                            <a asp-page="index" asp-route-id="@Model.tweets[i].tweetID" class="d-inline-block btn btn-info rounded-pill pl-4 pr-4">Comments</a>
+                            <a asp-page="index" asp-route-id="@Model.posts[i].tweetID" class="d-inline-block btn btn-info rounded-pill pl-4 pr-4">Comments</a>
                         </div>
                     </div>
                 </div>
@@ -78,17 +78,17 @@
                         <div class="tablerow">
                             <div class="border-bottom pb-3">
                                 <img class="d-inline-block rounded-circle ml-2 mt-2" src="~/photo4.jpg" alt="" height="75px" width="75px" />
-                                <div class="d-inline-flex flex-column ml-2">
-                                    <h5 class="d-inline-block">@Model.cName</h5>
+                                <div class="d-inline-flex flex-column ml-2" style="max-width: 340px">
+                                    <h4 class="d-inline-block">@Model.sPosts[0].name</h4>
                                     <div class="d-inline-flex align-items-center mt-1">
-                                        <p class="d-inline-block">@Model.cMessage</p>
+                                        <pre class="d-inline-block">@Model.sPosts[0].message</pre>
                                     </div>
                                 </div>
-                                <p class="d-inline-block float-right mr-2" style="color: darkgray; font-weight: 600; font-size: 17px;">@Model.cDate</p>
-                                @if (Model.cImage != null)
+                                <p class="d-inline-block float-right mr-2" style="color: darkgray; font-weight: 600; font-size: 17px;">@Model.sPosts[0].date</p>
+                                @if (Model.sPosts[0].image != null)
                                 {
                                     <div class="preview position-relative">
-                                        <img src="data:image/png;base64, @Model.cImage" class="file-preview2" id="image" />
+                                        <img src="data:image/png;base64, @Model.sPosts[0].image" class="file-preview2" id="image" />
                                     </div>
                                 }
                             </div>

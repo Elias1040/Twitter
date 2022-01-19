@@ -28,7 +28,6 @@ namespace Twitter
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
                 //options.IdleTimeout = TimeSpan.FromSeconds(30);
             });
-            services.AddScoped<Session>();
             services.AddMemoryCache();
             services.AddMvc();
 
