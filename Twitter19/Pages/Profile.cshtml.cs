@@ -31,17 +31,17 @@ namespace Twitter19.Pages
         public IFormFile Profile { get; set; }
         [BindProperty]
         public string Bio { get; set; }
-        public string fBio { get; set; }
+        public string FBio { get; set; }
         public string Name { get; set; }
-        public string b64Header { get; set; }
-        public string b64Profile { get; set; }
+        public string B64Header { get; set; }
+        public string B64Profile { get; set; }
         public IActionResult OnGet()
         {
             if (HttpContext.Session.GetString("Logged in") != "1")
                 return RedirectToPage("Login");
 
-            SqlConnection con = new SqlConnection(connectionString);
-            SqlCommand cmd = new SqlCommand("GetUser", con);
+            SqlConnection con = new(connectionString);
+            SqlCommand cmd = new("GetUser", con);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
             con.Open();
             cmd.Parameters.AddWithValue("@id", HttpContext.Session.GetInt32("ID"));
@@ -55,9 +55,9 @@ namespace Twitter19.Pages
                     Image header = new Images().ConvertToImage((byte[])reader[5]);
                     profile = new Images().Resize(profile, new Size(121, 121));
                     header = new Images().Resize(header, new Size(698, 200));
-                    b64Profile = new Images().ConvertToB64(profile);
-                    b64Header = new Images().ConvertToB64(header);
-                    fBio = reader.GetString(6);
+                    B64Profile = new Images().ConvertToB64(profile);
+                    B64Header = new Images().ConvertToB64(header);
+                    FBio = reader.GetString(6);
                 }
                 catch (Exception)
                 {
@@ -72,8 +72,8 @@ namespace Twitter19.Pages
             if (HttpContext.Session.GetString("Logged in") != "1")
                 return RedirectToPage("Login");
 
-            SqlConnection con = new SqlConnection(connectionString);
-            SqlCommand cmd = new SqlCommand("EditProfile", con);
+            SqlConnection con = new(connectionString);
+            SqlCommand cmd = new("EditProfile", con);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
             con.Open();
             byte[] headerBytes = new Images().ConvertToBytes(Header);

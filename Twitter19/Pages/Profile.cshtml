@@ -7,16 +7,16 @@
         <h4 class="d-block ml-2 mt-1">@Model.Name <span class="badge badge-primary" style="font-size: .55em">0 posts</span></h4>
     </div>
     <div class="w-100 d-block">
-        <img src="data:image/png;base64, @Model.b64Header" onerror="this.src='/Untitled.png'" class="w-100" height="200" />
+        <img src="data:image/png;base64, @Model.B64Header" onerror="this.src='/Untitled.png'" class="w-100" height="200" />
         <div style="" class="d-block">
-            <img src="data:image/png;base64, @Model.b64Profile" onerror="this.src='/perm_identity_black_24dp.svg'" height="125" width="125" class="bg-white rounded-circle border border-dark position-relative ml-4" style="margin-top: -9%; border-width: 4px!important;" />
+            <img src="data:image/png;base64, @Model.B64Profile" onerror="this.src='/perm_identity_black_24dp.svg'" height="125" width="125" class="bg-white rounded-circle border border-dark position-relative ml-4" style="margin-top: -9%; border-width: 4px!important;" />
             <!-- Button trigger modal -->
             <button type="button" class="btn btn-outline-primary float-right mr-4 mt-2" data-toggle="modal" data-target="#exampleModal">
                 Edit profile
             </button>
             <div class="ml-5">
                 <h5 class="mt-2">Bio</h5>
-                <pre>@Model.fBio</pre>
+                <pre>@Model.FBio</pre>
             </div>
         </div>
     </div>

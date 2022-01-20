@@ -15,7 +15,7 @@ namespace Twitter19.Classes
         {
             try
             {
-                MemoryStream ms = new MemoryStream();
+                MemoryStream ms = new();
                 img.CopyTo(ms);
                 ms.Close();
                 return ms.ToArray();
@@ -33,7 +33,7 @@ namespace Twitter19.Classes
         {
             try
             {
-                MemoryStream ms = new MemoryStream();
+                MemoryStream ms = new();
                 img.Save(ms, ImageFormat.Png);
                 ms.Close();
                 return Convert.ToBase64String(ms.ToArray());
@@ -45,7 +45,7 @@ namespace Twitter19.Classes
         }
         public Image ConvertToImage(byte[] bytes)
         {
-            MemoryStream ms = new MemoryStream(bytes);
+            MemoryStream ms = new(bytes);
             Image img = Image.FromStream(ms);
             ms.Close();
             return img;

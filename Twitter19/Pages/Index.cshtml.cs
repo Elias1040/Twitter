@@ -29,15 +29,15 @@ namespace Twitter.Pages
 
         #region properties
         [BindProperty]
-        public string tweet { get; set; }
+        public string Tweet { get; set; }
         [BindProperty]
-        public IFormFile img { get; set; }
+        public IFormFile Img { get; set; }
         [BindProperty]
-        public string comment { get; set; }
-        public List<ListPost> posts { get; set; }
-        public List<ListComment> comments { get; set; }
-        public List<ListPost> sPosts { get; set; }
-        public string tweetID { get; set; }
+        public string Comment { get; set; }
+        public List<ListPost> Posts { get; set; }
+        public List<ListComment> Comments { get; set; }
+        public List<ListPost> SPosts { get; set; }
+        public string TweetID { get; set; }
         #endregion
 
         public IActionResult OnGet(string id)
@@ -51,72 +51,73 @@ namespace Twitter.Pages
             if (id != null)
                 HttpContext.Session.SetString("tweetID", id);
 
-            SqlConnection con = new SqlConnection(connectionString);
-            SqlCommand cmd = new SqlCommand("GetTweets", con);
+
+            SqlConnection con = new(connectionString);
+            SqlCommand cmd = new("GetTweets", con);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
             con.Open();
-            posts = new List<ListPost>();
+            Posts = new List<ListPost>();
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                ListPost listPost = new ListPost();
-                listPost.name = reader.GetString(0);
-                listPost.message = reader.GetString(1);
-                listPost.tweetID = reader.GetInt32(2);
-                listPost.date = new PostDate().idk(reader.GetDateTime(3));
+                ListPost listPost = new();
+                listPost.Name = reader.GetString(0);
+                listPost.Message = reader.GetString(1);
+                listPost.TweetID = reader.GetInt32(2);
+                listPost.Date = new PostDate().Idk(reader.GetDateTime(3));
                 try
                 {
-                    MemoryStream ms = new MemoryStream((byte[])reader[4]);
+                    MemoryStream ms = new((byte[])reader[4]);
                     Image img = Image.FromStream(ms);
                     if (img.Width >= 500 || img.Height >= 500)
                     {
                         Image reImg = new Images().Resize(new Bitmap(img), new Size(500, 400));
-                        listPost.image = new Images().ConvertToB64(reImg);
+                        listPost.Image = new Images().ConvertToB64(reImg);
                     }
                     else
-                        listPost.image = Convert.ToBase64String((byte[])reader[4]);
+                        listPost.Image = Convert.ToBase64String((byte[])reader[4]);
 
                 }
                 catch (Exception)
                 { }
-                posts.Add(listPost);
+                Posts.Add(listPost);
             }
             reader.Close();
             #region date
             
             #endregion
-            posts.Reverse();
+            Posts.Reverse();
             #endregion
 
             #region OnGetSinglePost
             if (id != null)
             {
-                tweetID = id;
-                cmd = new SqlCommand("GetSingleTweet", con);
+                TweetID = id;
+                cmd = new("GetSingleTweet", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@tweetID", id);
                 reader = cmd.ExecuteReader();
-                sPosts = new List<ListPost>();
+                SPosts = new List<ListPost>();
                 while (reader.Read())
                 {
-                    ListPost listPost = new ListPost();
-                    listPost.name = reader.GetString(0);
-                    listPost.message = reader.GetString(1);
+                    ListPost listPost = new();
+                    listPost.Name = reader.GetString(0);
+                    listPost.Message = reader.GetString(1);
                     try
                     {
-                        MemoryStream ms = new MemoryStream((byte[])reader[2]);
+                        MemoryStream ms = new((byte[])reader[2]);
                         Image img = Image.FromStream(ms);
                         if (img.Width >= 500 || img.Height >= 500)
                         {
                             Image reImg = new Images().Resize(new Bitmap(img), new Size(300, 150));
-                            listPost.image = new Images().ConvertToB64(reImg);
+                            listPost.Image = new Images().ConvertToB64(reImg);
                         }
                         else
-                            listPost.image = Convert.ToBase64String((byte[])reader[4]);
+                            listPost.Image = Convert.ToBase64String((byte[])reader[4]);
                     }
                     catch (Exception)
                     { }
-                    sPosts.Add(listPost);
+                    SPosts.Add(listPost);
                 }
                 reader.Close();
                 #region date
@@ -129,23 +130,23 @@ namespace Twitter.Pages
             //string test = HttpContext.Session.GetString("tweetID");
             if (id != null)
             {
-                cmd = new SqlCommand("GetComments", con);
+                cmd = new("GetComments", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@id", HttpContext.Session.GetString("tweetID"));
-                comments = new List<ListComment>();
+                Comments = new List<ListComment>();
                 reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
                     ListComment listComment = new();
-                    listComment.name = reader.GetString(0);
-                    listComment.comment = reader.GetString(1);
-                    listComment.date = new PostDate().idk(reader.GetDateTime(2));
-                    comments.Add(listComment);
+                    listComment.Name = reader.GetString(0);
+                    listComment.Comment = reader.GetString(1);
+                    listComment.Date = new PostDate().Idk(reader.GetDateTime(2));
+                    Comments.Add(listComment);
                 }
                 #region date
                 
                 #endregion
-                comments.Reverse();
+                Comments.Reverse();
             }
             #endregion
             con.Close();
@@ -160,17 +161,16 @@ namespace Twitter.Pages
             if (HttpContext.Session.GetString("Logged in") != "1")
                 return RedirectToPage("Login");
 
-            if (tweet != null)
+            if (Tweet != null)
             {
-                SqlConnection con = new SqlConnection(connectionString);
-                SqlCommand cmd = new SqlCommand("CreateTweet", con);
+                SqlConnection con = new(connectionString);
+                SqlCommand cmd = new("CreateTweet", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 con.Open();
-                cmd.Parameters.AddWithValue("@tweet", tweet);
+                cmd.Parameters.AddWithValue("@tweet", Tweet);
                 cmd.Parameters.AddWithValue("@user", HttpContext.Session.GetInt32("ID"));
-                byte[] data = new Images().ConvertToBytes(img);
+                byte[] data = new Images().ConvertToBytes(Img);
                 cmd.Parameters.AddWithValue("@imagebytes", data);
-                MemoryStream ms = new MemoryStream();
                 cmd.ExecuteNonQuery();
                 con.Close();
             }
@@ -182,15 +182,15 @@ namespace Twitter.Pages
             if (HttpContext.Session.GetString("Logged in") != "1")
                 return RedirectToPage("Login");
 
-            if (comment != null)
+            if (Comment != null)
             {
-                SqlConnection con = new SqlConnection(connectionString);
-                SqlCommand cmd = new SqlCommand("CreateComment", con);
+                SqlConnection con = new(connectionString);
+                SqlCommand cmd = new("CreateComment", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 con.Open();
                 cmd.Parameters.AddWithValue("@tweetID", HttpContext.Session.GetString("tweetID"));
                 cmd.Parameters.AddWithValue("@userID", HttpContext.Session.GetInt32("ID"));
-                cmd.Parameters.AddWithValue("@comment", comment);
+                cmd.Parameters.AddWithValue("@comment", Comment);
                 cmd.ExecuteNonQuery();
                 con.Close();
             }

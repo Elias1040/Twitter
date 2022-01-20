@@ -7,23 +7,23 @@ namespace Twitter19.Classes
 {
     public class ListPost
     {
-        public string message { get; set; }
-        public string name { get; set; }
-        public string image { get; set; }
-        public string dimensions { get; set; }
-        public string date { get; set; }
-        public int tweetID { get; set; }
+        public string Message { get; set; }
+        public string Name { get; set; }
+        public string Image { get; set; }
+        public string Dimensions { get; set; }
+        public string Date { get; set; }
+        public int TweetID { get; set; }
     }
     public class ListComment
     {
-        public string comment { get; set; }
-        public string name { get; set; }
-        public string date { get; set; }
+        public string Comment { get; set; }
+        public string Name { get; set; }
+        public string Date { get; set; }
     }
 
     public class PostDate
     {
-        public string idk(DateTime dateTime)
+        public string Idk(DateTime dateTime)
         {
             TimeSpan now = DateTime.Now.Subtract(dateTime);
             if (now <= TimeSpan.FromSeconds(60))
