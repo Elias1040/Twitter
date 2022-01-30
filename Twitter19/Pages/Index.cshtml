@@ -53,7 +53,8 @@
                         }
                         <div class="form-input mt-2 mb-2 text-right mr-4" style="height: 30px;">
                             <!-- Button trigger modal -->
-                            <a asp-page="index" asp-route-id="@Model.Posts[i].TweetID" class="d-inline-block btn btn-info rounded-pill pl-4 pr-4">Comments</a>
+                            <a asp-page="Sentiment" asp-route-id="@Model.Posts[i].TweetID" class="d-inline-block SentimentNone"></a>
+                            <a asp-page="Index" asp-route-id="@Model.Posts[i].TweetID" class="d-inline-block btn btn-info rounded-pill pl-4 pr-4">Comments</a>
                         </div>
                     </div>
                 </div>
@@ -94,20 +95,20 @@
                             </div>
                         </div>
                         <div class="mt-2 pb-2 border-bottom">
-                            <input asp-for="Comment" type="text" class="border-0 p-2" placeholder="Tweet your reply" />
+                            <textarea asp-for="Comment" id="text" type="text" style="height: 100px; resize: none; overflow: hidden;" class="border-0 p-2 w-75" placeholder="Tweet your reply" required maxlength="120"></textarea>
                             <button type="submit" class="btn btn-primary d-inline-block rounded-pill float-right">Reply</button>
                         </div>
                         @foreach (var item in Model.Comments)
                         {
                             <div class="d-block mt-5">
                                 <img class="d-inline-block rounded-circle ml-2 mt-2" src="~/photo4.jpg" alt="" height="75px" width="75px" />
-                                <div class="d-inline-flex flex-column ml-2">
+                                <p class="d-inline-block float-right mr-2" style="color: darkgray; font-weight: 600; font-size: 17px;">@item.Date</p>
+                                <div class="d-inline-flex flex-column ml-2" style="max-width: 270px">
                                     <h5 class="d-inline-block">@item.Name</h5>
                                     <div class="d-inline-flex align-items-center mt-1">
-                                        <p class="d-inline-block">@item.Comment</p>
+                                        <span class="d-inline-block text-break">@item.Comment</span>
                                     </div>
                                 </div>
-                                <p class="d-inline-block float-right mr-2" style="color: darkgray; font-weight: 600; font-size: 17px;">@item.Date</p>
                             </div>
                         }
                     </div>
@@ -122,7 +123,7 @@
 
 window.onload = function () {
     load(@Model.TweetID)
-    };
+    }
 
 //#region urlmodify
     /*

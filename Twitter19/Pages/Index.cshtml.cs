@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using NodaTime;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -37,6 +38,7 @@ namespace Twitter.Pages
         public List<ListPost> Posts { get; set; }
         public List<ListComment> Comments { get; set; }
         public List<ListPost> SPosts { get; set; }
+        public List<bool> Sentiment { get; set; }
         public string TweetID { get; set; }
         #endregion
 
@@ -83,9 +85,17 @@ namespace Twitter.Pages
                 Posts.Add(listPost);
             }
             reader.Close();
-            #region date
-            
-            #endregion
+            cmd = new("GetSentiment", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@UID", HttpContext.Session.GetInt32("ID"));
+            Sentiment = new List<bool>();
+            reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                Sentiment.Add(reader.GetBoolean(0));
+            }
+            Sentiment.Reverse();
+            reader.Close();
             Posts.Reverse();
             #endregion
 
@@ -121,7 +131,7 @@ namespace Twitter.Pages
                 }
                 reader.Close();
                 #region date
-                
+
                 #endregion
             }
             #endregion
@@ -144,7 +154,7 @@ namespace Twitter.Pages
                     Comments.Add(listComment);
                 }
                 #region date
-                
+
                 #endregion
                 Comments.Reverse();
             }
@@ -171,7 +181,27 @@ namespace Twitter.Pages
                 cmd.Parameters.AddWithValue("@user", HttpContext.Session.GetInt32("ID"));
                 byte[] data = new Images().ConvertToBytes(Img);
                 cmd.Parameters.AddWithValue("@imagebytes", data);
-                cmd.ExecuteNonQuery();
+                int TID = (int)cmd.ExecuteScalar();
+                Console.WriteLine(TID);
+                con.Close();
+                con.Open();
+                cmd = new("GetAllUserIDs", con);
+                List<int> Users = new();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    Users.Add(reader.GetInt32(0));
+                }
+                con.Close();
+                con.Open();
+                foreach (var item in Users)
+                {
+                    cmd = new("DefaultSentiment", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@UID", item);
+                    cmd.Parameters.AddWithValue("@TID", TID);
+                    cmd.ExecuteNonQuery();
+                }
                 con.Close();
             }
             return RedirectToPage("Index");

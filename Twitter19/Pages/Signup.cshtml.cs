@@ -45,7 +45,7 @@ namespace Twitter.Pages
             if (valid)
             {
                 SqlConnection con = new(connectionString);
-                SqlCommand cmd = new("userSignup", con);
+                SqlCommand cmd = new("UserSignup", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 con.Open();
                 string salt = Hash_Salt.CreateSalt(16);
