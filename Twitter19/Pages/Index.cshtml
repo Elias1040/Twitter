@@ -71,7 +71,6 @@
 </div>
 @if (HttpContext.Session.GetString("tweetID") != null)
 {
-
     <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -105,16 +104,24 @@
                             <textarea asp-for="Comment" id="text" type="text" style="height: 100px; resize: none; overflow: hidden;" class="border-0 p-2 w-75" placeholder="Tweet your reply" required maxlength="120"></textarea>
                             <button type="submit" class="btn btn-primary d-inline-block rounded-pill float-right">Reply</button>
                         </div>
-                        @foreach (var item in Model.Comments)
+                        @for (int i = 0; i < Model.Comments.Count; i++)
                         {
                             <div class="d-block mt-5">
                                 <img class="d-inline-block rounded-circle ml-2 mt-2" src="~/photo4.jpg" alt="" height="75px" width="75px" />
-                                <p class="d-inline-block float-right mr-2" style="color: darkgray; font-weight: 600; font-size: 17px;">@item.Date</p>
+                                <p class="d-inline-block float-right mr-2" style="color: darkgray; font-weight: 600; font-size: 17px;">@Model.Comments[i].Date</p>
                                 <div class="d-inline-flex flex-column ml-2" style="max-width: 270px">
-                                    <h5 class="d-inline-block">@item.Name</h5>
+                                    <h5 class="d-inline-block">@Model.Comments[i].Name</h5>
                                     <div class="d-inline-flex align-items-center mt-1">
-                                        <span class="d-inline-block text-break">@item.Comment</span>
+                                        <span class="d-inline-block text-break">@Model.Comments[i].Comment</span>
                                     </div>
+                                    @if (Model.CommentSentiment[i])
+                                    {
+                                        <a asp-page="CommentSentiment" asp-route-id="@Model.Comments[i].CommentID" class="d-inline-block Sentiment"></a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-page="CommentSentiment" asp-route-id="@Model.Comments[i].CommentID" class="d-inline-block SentimentNone"></a>
+                                    }
                                 </div>
                             </div>
                         }

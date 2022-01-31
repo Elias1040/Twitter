@@ -8,15 +8,15 @@ namespace Twitter19.Classes
     public class ListPost
     {
         public string Message { get; set; }
-        public string Name { get; set; }
         public string Image { get; set; }
-        public string Dimensions { get; set; }
+        public string Name { get; set; }
         public string Date { get; set; }
         public int TweetID { get; set; }
     }
     public class ListComment
     {
         public string Comment { get; set; }
+        public int CommentID { get; set; }
         public string Name { get; set; }
         public string Date { get; set; }
     }

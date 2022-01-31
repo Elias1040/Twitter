@@ -14,7 +14,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Twitter19.Classes;
-using Twitter19.Classes;
 
 namespace Twitter.Pages
 {
@@ -39,6 +38,7 @@ namespace Twitter.Pages
         public List<ListComment> Comments { get; set; }
         public List<ListPost> SPosts { get; set; }
         public List<bool> Sentiment { get; set; }
+        public List<bool> CommentSentiment { get; set; }
         public string TweetID { get; set; }
         #endregion
 
@@ -94,9 +94,9 @@ namespace Twitter.Pages
             {
                 Sentiment.Add(reader.GetBoolean(0));
             }
-            Sentiment.Reverse();
             reader.Close();
             Posts.Reverse();
+            Sentiment.Reverse();
             #endregion
 
             #region OnGetSinglePost
@@ -150,16 +150,25 @@ namespace Twitter.Pages
                     ListComment listComment = new();
                     listComment.Name = reader.GetString(0);
                     listComment.Comment = reader.GetString(1);
-                    listComment.Date = new PostDate().Idk(reader.GetDateTime(2));
+                    listComment.Date = new PostDate().Idk(reader.GetDateTime(3));
+                    listComment.CommentID = reader.GetInt32(2);
                     Comments.Add(listComment);
                 }
-                #region date
-
-                #endregion
+                reader.Close();
+                cmd = new("GetCommentSentiment", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@UID", HttpContext.Session.GetInt32("ID"));
+                CommentSentiment = new List<bool>();
+                reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    CommentSentiment.Add(reader.GetBoolean(0));
+                }
+                reader.Close();
                 Comments.Reverse();
+                CommentSentiment.Reverse();
             }
             #endregion
-            
             con.Close();
             return Page();
         }

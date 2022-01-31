@@ -70,6 +70,18 @@ namespace Twitter.Pages
                         cmd1.Parameters.AddWithValue("@TID", reader.GetInt32(2));
                         cmd1.ExecuteNonQuery();
                     }
+                    cmd = new("GetComments", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@id", HttpContext.Session.GetString("tweetID"));
+                    reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        SqlCommand cmd1 = new("DefaultCommentSentiment", con);
+                        cmd1.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd1.Parameters.AddWithValue("@UID", ID);
+                        cmd1.Parameters.AddWithValue("@CID", reader.GetInt32(2));
+                        cmd1.ExecuteNonQuery();
+                    }
                     con.Close();
                     return RedirectToPage("index");
                 }
