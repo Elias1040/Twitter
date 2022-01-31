@@ -53,13 +53,24 @@ namespace Twitter.Pages
                 cmd.Parameters.AddWithValue("@Password", Hash_Salt.GenerateHash(Password, salt));
                 cmd.Parameters.AddWithValue("@Name", Name);
                 cmd.Parameters.AddWithValue("@Salt", salt);
-                ID = cmd.ExecuteNonQuery();
+                ID = (int)cmd.ExecuteScalar();
                 if (ID != -1)
                 {
-                    con.Close();
                     Exist = false;
                     HttpContext.Session.SetString("Logged in", "1");
                     HttpContext.Session.SetInt32("ID", ID);
+                    cmd = new("GetTweets", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        SqlCommand cmd1 = new("DefaultSentiment", con);
+                        cmd1.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd1.Parameters.AddWithValue("@UID", ID);
+                        cmd1.Parameters.AddWithValue("@TID", reader.GetInt32(2));
+                        cmd1.ExecuteNonQuery();
+                    }
+                    con.Close();
                     return RedirectToPage("index");
                 }
                 else

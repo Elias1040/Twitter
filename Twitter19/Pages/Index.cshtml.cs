@@ -159,6 +159,7 @@ namespace Twitter.Pages
                 Comments.Reverse();
             }
             #endregion
+            
             con.Close();
             return Page();
         }
@@ -177,6 +178,7 @@ namespace Twitter.Pages
                 SqlCommand cmd = new("CreateTweet", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 con.Open();
+                int id = (int)HttpContext.Session.GetInt32("ID");
                 cmd.Parameters.AddWithValue("@tweet", Tweet);
                 cmd.Parameters.AddWithValue("@user", HttpContext.Session.GetInt32("ID"));
                 byte[] data = new Images().ConvertToBytes(Img);
