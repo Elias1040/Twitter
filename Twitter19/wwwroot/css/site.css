@@ -280,6 +280,16 @@ body {
 /*#endregion*/
 
 /*#region other*/
+
+.comment {
+    width: 35px;
+    height: 35px;
+    background-image: url(/chat-dots.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
 .SentimentNone {
     width: 35px;
     height: 35px;

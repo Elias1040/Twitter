@@ -35,6 +35,7 @@ namespace Twitter19.Pages
         public string Name { get; set; }
         public string B64Header { get; set; }
         public string B64Profile { get; set; }
+        public int TweetsCount { get; set; }
         public IActionResult OnGet()
         {
             if (HttpContext.Session.GetString("Logged in") != "1")
@@ -48,22 +49,26 @@ namespace Twitter19.Pages
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                Name = reader.GetString(3);
+                Name = reader.GetString(4);
                 try
                 {
-                    Image profile = new Images().ConvertToImage((byte[])reader[4]);
-                    Image header = new Images().ConvertToImage((byte[])reader[5]);
+                    Image profile = new Images().ConvertToImage((byte[])reader[5]);
+                    Image header = new Images().ConvertToImage((byte[])reader[6]);
                     profile = new Images().Resize(profile, new Size(121, 121));
                     header = new Images().Resize(header, new Size(698, 200));
                     B64Profile = new Images().ConvertToB64(profile);
                     B64Header = new Images().ConvertToB64(header);
-                    FBio = reader.GetString(6);
+                    FBio = reader.GetString(7);
                 }
                 catch (Exception)
                 {
 
                 }
             }
+            cmd = new("CountTweets", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@UID", HttpContext.Session.GetInt32("ID"));
+            TweetsCount = (int)cmd.ExecuteScalar();
             con.Close();
             return Page();
         }

@@ -18,7 +18,7 @@
                         <textarea class="border-0 d-block h5" style="max-width: 520px" id="post" placeholder="What's happening?" asp-for="Tweet"></textarea>
                     </div>
                     <div class="preview position-relative">
-                        <button type="button" id="delete" onclick="hidePreview()"><img src="~/close_black_24dp.svg" class="d-inline-block" /></button>
+                        <button type="button" id="delete" onclick="hidePreview()"><img src="~/close_black_24dp.svg" class="d-inline-block"></button>
                         <img id="file-ip-1-preview" />
                     </div>
                 </div>
@@ -61,7 +61,8 @@
                             {
                                 <a asp-page="Sentiment" asp-route-id="@Model.Posts[i].TweetID" class="d-inline-block SentimentNone"></a>
                             }
-                            <a asp-page="Index" asp-route-id="@Model.Posts[i].TweetID" class="d-inline-block btn btn-info rounded-pill pl-4 pr-4">Comments</a>
+                            <span>@Model.SentimentCount[i]</span>
+                            <a asp-page="Index" asp-route-id="@Model.Posts[i].TweetID" class="d-inline-block comment"></a>
                         </div>
                     </div>
                 </div>
@@ -69,6 +70,7 @@
         </div>
     </div>
 </div>
+
 @if (HttpContext.Session.GetString("tweetID") != null)
 {
     <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
@@ -116,12 +118,13 @@
                                     </div>
                                     @if (Model.CommentSentiment[i])
                                     {
-                                        <a asp-page="CommentSentiment" asp-route-id="@Model.Comments[i].CommentID" class="d-inline-block Sentiment"></a>
+                                        <a asp-page="CommentSentiment" asp-route-id="@Model.Comments[i].CommentID" asp-route-tid="@Model.TweetID" class="d-inline-block Sentiment"></a>
                                     }
                                     else
                                     {
                                         <a asp-page="CommentSentiment" asp-route-id="@Model.Comments[i].CommentID" class="d-inline-block SentimentNone"></a>
                                     }
+                                    <span>@Model.CommentSentimentCount[i]</span>
                                 </div>
                             </div>
                         }

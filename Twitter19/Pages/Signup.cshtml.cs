@@ -22,7 +22,6 @@ namespace Twitter.Pages
         public string CPassword { get; set; }
         [BindProperty]
         public string Name { get; set; }
-        public int ID { get; set; }
         public bool Exist { get; set; }
         private readonly string connectionString;
         public SignupModel(IConfiguration config)
@@ -53,12 +52,23 @@ namespace Twitter.Pages
                 cmd.Parameters.AddWithValue("@Password", Hash_Salt.GenerateHash(Password, salt));
                 cmd.Parameters.AddWithValue("@Name", Name);
                 cmd.Parameters.AddWithValue("@Salt", salt);
-                ID = (int)cmd.ExecuteScalar();
-                if (ID != -1)
+                int ID = 0;
+                try
+                {
+                    ID = (int)cmd.ExecuteScalar();
+
+                }
+                catch (NullReferenceException)
+                {
+
+                }
+                con.Close();
+                if (ID != 0)
                 {
                     Exist = false;
                     HttpContext.Session.SetString("Logged in", "1");
                     HttpContext.Session.SetInt32("ID", ID);
+                    con.Open();
                     cmd = new("GetTweets", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     SqlDataReader reader = cmd.ExecuteReader();
@@ -70,17 +80,33 @@ namespace Twitter.Pages
                         cmd1.Parameters.AddWithValue("@TID", reader.GetInt32(2));
                         cmd1.ExecuteNonQuery();
                     }
-                    cmd = new("GetComments", con);
+                    con.Close();
+                    con.Open();
+                    cmd = new("GetAllTweets", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@id", HttpContext.Session.GetString("tweetID"));
+                    List<int> tweets = new List<int>();
                     reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
-                        SqlCommand cmd1 = new("DefaultCommentSentiment", con);
-                        cmd1.CommandType = System.Data.CommandType.StoredProcedure;
-                        cmd1.Parameters.AddWithValue("@UID", ID);
-                        cmd1.Parameters.AddWithValue("@CID", reader.GetInt32(2));
-                        cmd1.ExecuteNonQuery();
+                        tweets.Add(reader.GetInt32(0));
+                    }
+                    con.Close();
+                    con.Open();
+                    foreach (var item in tweets)
+                    {
+                        cmd = new("GetComment", con);
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@TID", item);
+                        reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            SqlCommand cmd1 = new("DefaultCommentSentiment", con);
+                            cmd1.CommandType = System.Data.CommandType.StoredProcedure;
+                            cmd1.Parameters.AddWithValue("@TID", item);
+                            cmd1.Parameters.AddWithValue("@CID", reader.GetInt32(0));
+                            cmd1.Parameters.AddWithValue("@UID", ID);
+                            cmd1.ExecuteNonQuery();
+                        }
                     }
                     con.Close();
                     return RedirectToPage("index");

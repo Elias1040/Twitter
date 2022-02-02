@@ -31,8 +31,9 @@ namespace Twitter19.Pages
             cmd.Parameters.AddWithValue("UID", HttpContext.Session.GetInt32("ID"));
             cmd.Parameters.AddWithValue("CID", id);
             cmd.ExecuteNonQuery();
+            string rTID = HttpContext.Session.GetString("tweetID");
             HttpContext.Session.Remove("tweetID");
-            return RedirectToPage("Index", new { id = id });
+            return RedirectToPage("Index", new { id = rTID });
 
         }
     }

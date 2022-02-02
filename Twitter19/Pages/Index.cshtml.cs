@@ -39,6 +39,8 @@ namespace Twitter.Pages
         public List<ListPost> SPosts { get; set; }
         public List<bool> Sentiment { get; set; }
         public List<bool> CommentSentiment { get; set; }
+        public List<int> SentimentCount { get; set; }
+        public List<int> CommentSentimentCount { get; set; }
         public string TweetID { get; set; }
         #endregion
 
@@ -52,7 +54,7 @@ namespace Twitter.Pages
             #region OnGetPosts
             if (id != null)
                 HttpContext.Session.SetString("tweetID", id);
-
+            TweetID = id;
 
             SqlConnection con = new(connectionString);
             SqlCommand cmd = new("GetTweets", con);
@@ -95,14 +97,22 @@ namespace Twitter.Pages
                 Sentiment.Add(reader.GetBoolean(0));
             }
             reader.Close();
+            SentimentCount = new List<int>();
+            foreach (var item in Posts)
+            {
+                cmd = new("CountSentiment", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@TID", item.TweetID);
+                SentimentCount.Add((int)cmd.ExecuteScalar());
+            }
             Posts.Reverse();
             Sentiment.Reverse();
+            SentimentCount.Reverse();
             #endregion
 
             #region OnGetSinglePost
             if (id != null)
             {
-                TweetID = id;
                 cmd = new("GetSingleTweet", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@tweetID", id);
@@ -158,6 +168,7 @@ namespace Twitter.Pages
                 cmd = new("GetCommentSentiment", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@UID", HttpContext.Session.GetInt32("ID"));
+                cmd.Parameters.AddWithValue("@TID", id);
                 CommentSentiment = new List<bool>();
                 reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -165,8 +176,19 @@ namespace Twitter.Pages
                     CommentSentiment.Add(reader.GetBoolean(0));
                 }
                 reader.Close();
+
+                CommentSentimentCount = new List<int>();
+                foreach (var item in Comments)
+                {
+                    cmd = new("CountCommentSentiment", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@CID", item.CommentID);
+                    cmd.Parameters.AddWithValue("@TID", id);
+                    CommentSentimentCount.Add((int)cmd.ExecuteScalar());
+                }
                 Comments.Reverse();
                 CommentSentiment.Reverse();
+                CommentSentimentCount.Reverse();
             }
             #endregion
             con.Close();
@@ -232,11 +254,28 @@ namespace Twitter.Pages
                 cmd.Parameters.AddWithValue("@tweetID", HttpContext.Session.GetString("tweetID"));
                 cmd.Parameters.AddWithValue("@userID", HttpContext.Session.GetInt32("ID"));
                 cmd.Parameters.AddWithValue("@comment", Comment);
-                cmd.ExecuteNonQuery();
+                int CID = (int)cmd.ExecuteScalar();
+                List<int> Users = new();
+                cmd = new("GetAllUserIDs", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    Users.Add(reader.GetInt32(0));
+                }
+                foreach (var item in Users)
+                {
+                    string a = HttpContext.Session.GetString("tweetID");
+                    cmd = new("DefaultCommentSentiment", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@UID", item);
+                    cmd.Parameters.AddWithValue("@CID", CID);
+                    cmd.Parameters.AddWithValue("@TID", HttpContext.Session.GetString("tweetID"));
+                    cmd.ExecuteNonQuery();
+                }
                 con.Close();
             }
             return RedirectToPage("Index", new { id = HttpContext.Session.GetString("tweetID") });
-
         }
     }
 }
