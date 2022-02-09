@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Twitter19.Repo;
 
 namespace Twitter
 {
@@ -31,6 +32,7 @@ namespace Twitter
             services.AddMemoryCache();
             services.AddMvc();
             services.AddHttpContextAccessor();
+            services.AddSingleton<IRepo>(new Repo(Configuration));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,6 +60,7 @@ namespace Twitter
             {
                 endpoints.MapRazorPages();
             });
+            
         }
     }
 }

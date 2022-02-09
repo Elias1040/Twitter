@@ -282,8 +282,8 @@ body {
 /*#region other*/
 
 .comment {
-    width: 35px;
-    height: 35px;
+    width: 25px;
+    height: 25px;
     background-image: url(/chat-dots.svg);
     background-position: center;
     background-repeat: no-repeat;
@@ -291,8 +291,8 @@ body {
 }
 
 .SentimentNone {
-    width: 35px;
-    height: 35px;
+    width: 25px;
+    height: 25px;
     background-image: url(/favorite_border_black_24dp.svg);
     background-position: center;
     background-repeat: no-repeat;
@@ -300,8 +300,8 @@ body {
 }
 
 .Sentiment {
-    width: 35px;
-    height: 35px;
+    width: 25px;
+    height: 25px;
     background-image: url(/favorite_black_24dp.svg);
     background-position: center;
     background-repeat: no-repeat;

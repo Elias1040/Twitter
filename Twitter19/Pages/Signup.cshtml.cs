@@ -84,7 +84,7 @@ namespace Twitter.Pages
                     con.Open();
                     cmd = new("GetAllTweets", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    List<int> tweets = new List<int>();
+                    List<int> tweets = new();
                     reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {

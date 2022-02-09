@@ -36,7 +36,7 @@
             @for (int i = 0; i < Model.Posts.Count; i++)
             {
                 <div class="tablerow">
-                    <div class="border-bottom pb-3">
+                    <div class="border-bottom pb-3" style="padding-top: 10px">
                         <img class="d-inline-block rounded-circle ml-2 mt-2" src="~/photo4.jpg" alt="" height="75px" width="75px" />
                         <div class="d-inline-flex flex-column ml-2">
                             <h4 class="d-inline-block">@Model.Posts[i].Name</h4>
@@ -51,18 +51,25 @@
                                 <img src="data:image/png;base64, @Model.Posts[i].Image" class="file-preview" id="image" />
                             </div>
                         }
-                        <div class="form-input mt-2 mb-2 text-right mr-4" style="height: 30px;">
+                        <div class="form-input mt-2 mb-2 text-right mr-4 d-flex justify-content-end align-content-center" style="height: 30px;">
                             <!-- Button trigger modal -->
+                            @if (Model.SentimentCount[i] != 0)
+                            {
+                                <span class="mr-1">@Model.SentimentCount[i]</span>
+                            }
                             @if (Model.Sentiment[i])
                             {
-                                <a asp-page="Sentiment" asp-route-id="@Model.Posts[i].TweetID" class="d-inline-block Sentiment"></a>
+                                <a asp-page="Sentiment" asp-route-id="@Model.Posts[i].TweetID" class="d-inline-block Sentiment mr-5"></a>
                             }
                             else
                             {
-                                <a asp-page="Sentiment" asp-route-id="@Model.Posts[i].TweetID" class="d-inline-block SentimentNone"></a>
+                                <a asp-page="Sentiment" asp-route-id="@Model.Posts[i].TweetID" class="d-inline-block SentimentNone mr-5"></a>
                             }
-                            <span>@Model.SentimentCount[i]</span>
-                            <a asp-page="Index" asp-route-id="@Model.Posts[i].TweetID" class="d-inline-block comment"></a>
+                            @if (Model.CommentCount[i] != 0)
+                            {
+                                <span class="mr-1">@Model.CommentCount[i]</span>
+                            }
+                            <a asp-page="Index" asp-route-id="@Model.Posts[i].TweetID" class="d-inline-block comment mr-2"></a>
                         </div>
                     </div>
                 </div>
@@ -116,15 +123,20 @@
                                     <div class="d-inline-flex align-items-center mt-1">
                                         <span class="d-inline-block text-break">@Model.Comments[i].Comment</span>
                                     </div>
+                                </div>
+                                <div class="d-flex align-content-center justify-content-end">
+                                    @if (Model.CommentSentimentCount[i] != 0)
+                                    {
+                                        <span class="mr-1">@Model.CommentSentimentCount[i]</span>
+                                    }
                                     @if (Model.CommentSentiment[i])
                                     {
                                         <a asp-page="CommentSentiment" asp-route-id="@Model.Comments[i].CommentID" asp-route-tid="@Model.TweetID" class="d-inline-block Sentiment"></a>
                                     }
                                     else
                                     {
-                                        <a asp-page="CommentSentiment" asp-route-id="@Model.Comments[i].CommentID" class="d-inline-block SentimentNone"></a>
+                                        <a asp-page="CommentSentiment" asp-route-id="@Model.Comments[i].CommentID" asp-route-tid="@Model.TweetID" class="d-inline-block SentimentNone"></a>
                                     }
-                                    <span>@Model.CommentSentimentCount[i]</span>
                                 </div>
                             </div>
                         }
