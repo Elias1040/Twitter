@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,6 +20,14 @@ namespace Twitter19.Classes
         public int CommentID { get; set; }
         public string Name { get; set; }
         public string Date { get; set; }
+    }
+
+    public class ListProfile
+    {
+        public Image PImg { get; set; }
+        public Image HImg { get; set; }
+        public string Name { get; set; }
+        public string Bio { get; set; }
     }
 
     public class PostDate

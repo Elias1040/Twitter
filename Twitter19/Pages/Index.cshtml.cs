@@ -21,12 +21,10 @@ namespace Twitter.Pages
     public class IndexModel : PageModel
     {
         #region privateReadonly
-        private readonly string connectionString;
         private readonly IRepo _repo;
-        public IndexModel(IConfiguration config, IRepo repo)
+        public IndexModel(IRepo repo)
         {
             _repo = repo;
-            connectionString = config.GetConnectionString("Default");
         }
         #endregion
 
@@ -45,16 +43,16 @@ namespace Twitter.Pages
         public List<int> SentimentCount { get; set; }
         public List<int> CommentSentimentCount { get; set; }
         public List<int> CommentCount { get; set; }
-        public string TweetID { get; set; }
+        public int TweetID { get; set; }
         #endregion
 
-        public IActionResult OnGet(string id)
+        public IActionResult OnGet(int id)
         {
             if (HttpContext.Session.GetString("Logged in") != "1")
                 return RedirectToPage("Login");
             
-            if (id != null)
-                HttpContext.Session.SetInt32("tweetID", Convert.ToInt32(id));
+            if (id != 0)
+                HttpContext.Session.SetInt32("tweetID", id);
             TweetID = id;
 
             #region Tweets
@@ -67,7 +65,7 @@ namespace Twitter.Pages
             #endregion
 
             #region Comments
-            if (id != null)
+            if (id != 0)
             {
                 SPosts = _repo.GetSinglePost(tid);
                 Comments = _repo.GetComments(tid);
@@ -100,7 +98,7 @@ namespace Twitter.Pages
             if (Comment != null)
                 _repo.PostComment((int)HttpContext.Session.GetInt32("ID"), (int)HttpContext.Session.GetInt32("tweetID"), Comment);
             
-            return RedirectToPage("Index", new { id = HttpContext.Session.GetString("tweetID") });
+            return RedirectToPage("Index", new { id = HttpContext.Session.GetInt32("tweetID") });
         }
     }
 }

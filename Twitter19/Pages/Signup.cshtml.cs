@@ -9,11 +9,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Twitter19.Classes;
+using Twitter19.Repo;
 
 namespace Twitter.Pages
 {
     public class SignupModel : PageModel
     {
+        #region Properties
         [BindProperty]
         public string Email { get; set; }
         [BindProperty]
@@ -23,11 +25,16 @@ namespace Twitter.Pages
         [BindProperty]
         public string Name { get; set; }
         public bool Exist { get; set; }
-        private readonly string connectionString;
-        public SignupModel(IConfiguration config)
+        #endregion
+
+        #region PrivateReadonly
+        private readonly IRepo _repo;
+        public SignupModel(IRepo repo)
         {
-            connectionString = config.GetConnectionString("Default");
+            _repo = repo;
         }
+        #endregion
+
         public void OnGet()
         {
 
@@ -43,79 +50,19 @@ namespace Twitter.Pages
 
             if (valid)
             {
-                SqlConnection con = new(connectionString);
-                SqlCommand cmd = new("UserSignup", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                con.Open();
-                string salt = Hash_Salt.CreateSalt(16);
-                cmd.Parameters.AddWithValue("@Email", Email);
-                cmd.Parameters.AddWithValue("@Password", Hash_Salt.GenerateHash(Password, salt));
-                cmd.Parameters.AddWithValue("@Name", Name);
-                cmd.Parameters.AddWithValue("@Salt", salt);
-                int ID = 0;
-                try
-                {
-                    ID = (int)cmd.ExecuteScalar();
-
-                }
-                catch (NullReferenceException)
-                {
-
-                }
-                con.Close();
+                int ID = _repo.Signup(Email, Password, Name);
                 if (ID != 0)
                 {
                     Exist = false;
                     HttpContext.Session.SetString("Logged in", "1");
                     HttpContext.Session.SetInt32("ID", ID);
-                    con.Open();
-                    cmd = new("GetTweets", con);
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        SqlCommand cmd1 = new("DefaultSentiment", con);
-                        cmd1.CommandType = System.Data.CommandType.StoredProcedure;
-                        cmd1.Parameters.AddWithValue("@UID", ID);
-                        cmd1.Parameters.AddWithValue("@TID", reader.GetInt32(2));
-                        cmd1.ExecuteNonQuery();
-                    }
-                    con.Close();
-                    con.Open();
-                    cmd = new("GetAllTweets", con);
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    List<int> tweets = new();
-                    reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        tweets.Add(reader.GetInt32(0));
-                    }
-                    con.Close();
-                    con.Open();
-                    foreach (var item in tweets)
-                    {
-                        cmd = new("GetComment", con);
-                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@TID", item);
-                        reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            SqlCommand cmd1 = new("DefaultCommentSentiment", con);
-                            cmd1.CommandType = System.Data.CommandType.StoredProcedure;
-                            cmd1.Parameters.AddWithValue("@TID", item);
-                            cmd1.Parameters.AddWithValue("@CID", reader.GetInt32(0));
-                            cmd1.Parameters.AddWithValue("@UID", ID);
-                            cmd1.ExecuteNonQuery();
-                        }
-                    }
-                    con.Close();
+                    _repo.DefaultSentiment(ID);
+                    _repo.DefaultCommentSentiment(ID);
                     return RedirectToPage("index");
                 }
                 else
                 {
                     Exist = true;
-                    con.Close();
-                    return Page();
                 }
             }
             return Page();

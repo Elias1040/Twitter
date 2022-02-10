@@ -8,20 +8,27 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Twitter19.Classes;
+using Twitter19.Repo;
 
 namespace Twitter.Pages
 {
     public class LoginModel : PageModel
     {
+        #region Properties
         [BindProperty]
         public string Email { get; set; }
         [BindProperty]
         public string Password { get; set; }
-        private readonly string connectionString;
-        public LoginModel(IConfiguration config) 
-        { 
-            connectionString = config.GetConnectionString("Default"); 
+        #endregion
+
+        #region PrivateReadonly
+        private readonly IRepo _repo;
+        public LoginModel(IRepo repo)
+        {
+            _repo = repo;
         }
+        #endregion
+
         public void OnGet()
         {
             if (HttpContext.Session.GetString("Logged in") == "1")
@@ -33,20 +40,12 @@ namespace Twitter.Pages
         }
         public IActionResult OnPost()
         {
-            SqlConnection con = new(connectionString);
-            SqlCommand cmd = new("UserLogin", con);
-            con.Open();
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@Email", Email);
-            SqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
+            int ID = _repo.Login(Email, Password);
+            if (ID != 0)
             {
-                if (Hash_Salt.PasswordAreEqual(Password, reader.GetString(2), reader.GetString(3)))
-                {
-                    HttpContext.Session.SetString("Logged in", "1");
-                    HttpContext.Session.SetInt32("ID", reader.GetInt32(0));
-                    return RedirectToPage("Index");
-                }
+                HttpContext.Session.SetString("Logged in", "1");
+                HttpContext.Session.SetInt32("ID", ID);
+                return RedirectToPage("index");
             }
             return Page();
         }

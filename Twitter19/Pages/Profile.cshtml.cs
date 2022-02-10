@@ -12,16 +12,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Twitter;
 using Twitter19.Classes;
+using Twitter19.Repo;
 
 namespace Twitter19.Pages
 {
     public class ProfileModel : PageModel
     {
         #region privateReadonly
-        private readonly string connectionString;
-        public ProfileModel(IConfiguration config)
+        private readonly IRepo _repo;
+        public ProfileModel(IRepo repo)
         {
-            connectionString = config.GetConnectionString("Default");
+            _repo = repo;
         }
         #endregion
 
@@ -31,8 +32,8 @@ namespace Twitter19.Pages
         public IFormFile Profile { get; set; }
         [BindProperty]
         public string Bio { get; set; }
-        public string FBio { get; set; }
         public string Name { get; set; }
+        public string FBio { get; set; }
         public string B64Header { get; set; }
         public string B64Profile { get; set; }
         public int TweetsCount { get; set; }
@@ -40,55 +41,30 @@ namespace Twitter19.Pages
         {
             if (HttpContext.Session.GetString("Logged in") != "1")
                 return RedirectToPage("Login");
-
-            SqlConnection con = new(connectionString);
-            SqlCommand cmd = new("GetUser", con);
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-            con.Open();
-            cmd.Parameters.AddWithValue("@id", HttpContext.Session.GetInt32("ID"));
-            SqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
+            ListProfile listProfiles = _repo.GetProfile((int)HttpContext.Session.GetInt32("ID"));
+            TweetsCount = _repo.CountTweets((int)HttpContext.Session.GetInt32("ID"));
+            FBio = listProfiles.Bio;
+            Name = listProfiles.Name;
+            try
             {
-                Name = reader.GetString(4);
-                try
-                {
-                    Image profile = new Images().ConvertToImage((byte[])reader[5]);
-                    Image header = new Images().ConvertToImage((byte[])reader[6]);
-                    profile = new Images().Resize(profile, new Size(121, 121));
-                    header = new Images().Resize(header, new Size(698, 200));
-                    B64Profile = new Images().ConvertToB64(profile);
-                    B64Header = new Images().ConvertToB64(header);
-                    FBio = reader.GetString(7);
-                }
-                catch (Exception)
-                {
-
-                }
+                Images images = new();
+                Image profile = images.Resize(listProfiles.PImg, new Size(121, 121));
+                Image header = images.Resize(listProfiles.HImg, new Size(698, 200));
+                B64Profile = images.ConvertToB64(profile);
+                B64Header = images.ConvertToB64(header);
             }
-            cmd = new("CountTweets", con);
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@UID", HttpContext.Session.GetInt32("ID"));
-            TweetsCount = (int)cmd.ExecuteScalar();
-            con.Close();
+            catch (Exception)
+            {
+
+            }
             return Page();
         }
         public IActionResult OnPost()
         {
             if (HttpContext.Session.GetString("Logged in") != "1")
                 return RedirectToPage("Login");
+            _repo.EditProfile((int)HttpContext.Session.GetInt32("ID"), Header, Profile, Bio);
 
-            SqlConnection con = new(connectionString);
-            SqlCommand cmd = new("EditProfile", con);
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-            con.Open();
-            byte[] headerBytes = new Images().ConvertToBytes(Header);
-            byte[] profileBytes = new Images().ConvertToBytes(Profile);
-            cmd.Parameters.AddWithValue("@id", HttpContext.Session.GetInt32("ID"));
-            cmd.Parameters.AddWithValue("@Profile", profileBytes);
-            cmd.Parameters.AddWithValue("@Header", headerBytes);
-            cmd.Parameters.AddWithValue("@Bio", Bio);
-            cmd.ExecuteNonQuery();
-            con.Close();
             return RedirectToPage("Profile");
         }
     }

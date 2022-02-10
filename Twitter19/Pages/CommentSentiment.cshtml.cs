@@ -7,16 +7,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
+using Twitter19.Repo;
 
 namespace Twitter19.Pages
 {
     public class CommentSentimentModel : PageModel
     {
         #region privateReadonly
-        private readonly string connectionString;
-        public CommentSentimentModel(IConfiguration config)
+        private readonly IRepo _repo;
+        public CommentSentimentModel(IRepo repo)
         {
-            connectionString = config.GetConnectionString("Default");
+            _repo = repo;
         }
         #endregion
         public IActionResult OnGet(int id)
@@ -24,17 +25,10 @@ namespace Twitter19.Pages
             if (HttpContext.Session.GetString("Logged in") != "1")
                 return RedirectToPage("Login");
 
-            SqlConnection con = new(connectionString);
-            SqlCommand cmd = new("UserCommentSentiment", con);
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-            con.Open();
-            cmd.Parameters.AddWithValue("UID", HttpContext.Session.GetInt32("ID"));
-            cmd.Parameters.AddWithValue("CID", id);
-            cmd.ExecuteNonQuery();
+            _repo.SetCommentSentiment((int)HttpContext.Session.GetInt32("ID"), id);
             string rTID = HttpContext.Session.GetString("tweetID");
             HttpContext.Session.Remove("tweetID");
             return RedirectToPage("Index", new { id = rTID });
-
         }
     }
 }
