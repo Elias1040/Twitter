@@ -11,28 +11,36 @@
     @*<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">*@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
+@using Microsoft.AspNetCore.Http;
 <body onload="load()">
     <div class="container mt-4">
         <main role="main" class="pb-3 d-flex justify-content-center">
-            <div class="d-inline-flex flex-column text-left position-fixed" style="left: 20%;">
-                <a class="mb-4 h5 text-dark text-decoration-none" asp-page="Index">Home</a>
-                <a class="mb-4 h5 text-dark text-decoration-none" href="#">Explore</a>
-                <a class="mb-4 h5 text-dark text-decoration-none" href="#">Notifications</a>
-                <a class="mb-4 h5 text-dark text-decoration-none" href="#">Messages</a>
-                <a class="mb-4 h5 text-dark text-decoration-none" href="#">Bookmarks</a>
-                <a class="mb-4 h5 text-dark text-decoration-none" asp-page="List">Lists</a>
-                <a class="mb-4 h5 text-dark text-decoration-none" asp-page="Profile">Profile</a>
-                <a class="mb-4 h5 text-dark text-decoration-none" href="#">Tweet</a>
-                <a class="mb-4 h5 text-dark text-decoration-none" asp-page="Logout">Log out</a>
-            </div>
-            @RenderBody()
-            <div class="d-inline-block position-fixed" style="right: 15%">
-                <div class="input-group">
-                    <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
-                           aria-describedby="search-addon" />
-                    <button type="button" class="btn btn-outline-primary">search</button>
+            @if (Context.Session.GetString("Logged in") == "1")
+            {
+                <div class="d-inline-flex flex-column text-left position-fixed" style="left: 20%;">
+
+                    <a class="mb-4 h5 text-dark text-decoration-none" asp-page="Index">Home</a>
+                    <a class="mb-4 h5 text-dark text-decoration-none" href="#">Explore</a>
+                    <a class="mb-4 h5 text-dark text-decoration-none" href="#">Notifications</a>
+                    <a class="mb-4 h5 text-dark text-decoration-none" asp-page="Message">Messages</a>
+                    <a class="mb-4 h5 text-dark text-decoration-none" href="#">Bookmarks</a>
+                    <a class="mb-4 h5 text-dark text-decoration-none" asp-page="List">Lists</a>
+                    <a class="mb-4 h5 text-dark text-decoration-none" asp-page="Profile">Profile</a>
+                    <a class="mb-4 h5 text-dark text-decoration-none" href="#">Tweet</a>
+                    <a class="mb-4 h5 text-dark text-decoration-none" asp-page="Logout">Log out</a>
                 </div>
-            </div>
+            }
+            @RenderBody()
+            @if (Context.Session.GetString("MPage") != "1" && Context.Session.GetString("Logged in") == "1")
+            {
+                <div class="d-inline-block position-fixed" style="right: 15%">
+                    <div class="input-group">
+                        <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
+                               aria-describedby="search-addon" />
+                        <button type="button" class="btn btn-outline-primary">search</button>
+                    </div>
+                </div>
+            }
         </main>
     </div>
 

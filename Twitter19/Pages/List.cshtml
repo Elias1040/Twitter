@@ -25,6 +25,8 @@
         </form>
     </div>
 </div>
+
+<!--#region Modal-->
 @if (HttpContext.Session.GetInt32("tweetID") != null)
 {
     <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
@@ -54,10 +56,10 @@
                             <textarea id="text" type="text" style="height: 100px; resize: none; overflow: hidden;" class="border-0 p-2 w-75" placeholder="Tweet your reply" required maxlength="120"></textarea>
                             <button type="submit" class="btn btn-primary d-inline-block rounded-pill float-right">Reply</button>
                         </div>
-                        
                     </div>
                 </form>
             </div>
         </div>
     </div>
 }
+<!--#endregion-->

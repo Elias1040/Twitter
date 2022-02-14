@@ -1,0 +1,20 @@
+﻿@page
+@model Twitter19.Pages.OtherProfilesModel
+@{
+}
+<div class="mcontainer border">
+    <div class="text-left mb-3 d-block">
+        <h4 class="d-block ml-2 mt-1">@Model.Name <span class="badge badge-primary" style="font-size: .55em">@Model.TweetsCount posts</span></h4>
+    </div>
+    <div class="w-100 d-block">
+        <img src="data:image/png;base64, @Model.B64Header" onerror="this.src='/Untitled.png'" class="w-100" height="200" />
+        <div style="" class="d-block">
+            <img src="data:image/png;base64, @Model.B64Profile" onerror="this.src='/perm_identity_black_24dp.svg'" height="125" width="125" class="bg-white rounded-circle border border-dark position-relative ml-4" style="margin-top: -9%; border-width: 4px!important;" />
+            <a asp-page="Follow" asp-route-id="@Model.PID" class="btn btn-outline-primary float-right mr-4 mt-2">Follow</a>
+            <div class="ml-5">
+                <h5 class="mt-2">Bio</h5>
+                <pre>@Model.FBio</pre>
+            </div>
+        </div>
+    </div>
+</div>

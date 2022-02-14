@@ -41,6 +41,7 @@ namespace Twitter19.Repo
         ListProfile GetProfile(int id);
         int CountTweets(int id);
         void EditProfile(int id, IFormFile hImg, IFormFile pImg, string bio);
+        public void Follow(int uid, int pid);
         #endregion
     }
 }
