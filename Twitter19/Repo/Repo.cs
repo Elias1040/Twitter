@@ -302,7 +302,7 @@ namespace Twitter19.Repo
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                if (Hash_Salt.PasswordAreEqual(password, reader.GetString(2), reader.GetString(3)))
+                if (Hash_Salt.PasswordAreEqual(password, reader.GetString("Password"), reader.GetString("Salt")))
                 {
                     int id = reader.GetInt32(0);
                     con.Close();
@@ -330,6 +330,12 @@ namespace Twitter19.Repo
             {
                 con.Open();
                 ID = (int)cmd.ExecuteScalar();
+                con.Close();
+                cmd = new("UpdateFollowerID", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@FID", ID);
+                con.Open();
+                cmd.ExecuteNonQuery();
                 con.Close();
                 return ID;
             }
@@ -393,13 +399,13 @@ namespace Twitter19.Repo
             while (reader.Read())
             {
                 ListProfile listProfiles = new();
-                listProfiles.Name = reader.GetString(4);
+                listProfiles.Name = reader.GetString("Name");
                 try
                 {
                     Images images = new();
-                    listProfiles.PImg = images.ConvertToImage((byte[])reader[5]);
-                    listProfiles.HImg = images.ConvertToImage((byte[])reader[6]);
-                    listProfiles.Bio = reader.GetString(7);
+                    listProfiles.PImg = images.ConvertToImage((byte[])reader["ProfileImg"]);
+                    listProfiles.HImg = images.ConvertToImage((byte[])reader["HeaderImg"]);
+                    listProfiles.Bio = reader.GetString("Bio");
                 }
                 catch (Exception)
                 {
@@ -446,6 +452,25 @@ namespace Twitter19.Repo
             con.Open();
             cmd.ExecuteNonQuery();
             con.Close();
+        }
+        #endregion
+
+        #region Message
+        public List<int> GetFollowers(int uid)
+        {
+            SqlConnection con = new(connectionString);
+            SqlCommand cmd = new("GetFollowers", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@UID", uid);
+            List<int> FollowerIDs = new();
+            con.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                FollowerIDs.Add(reader.GetInt32(1));
+            }
+            con.Close();
+            return FollowerIDs;
         }
         #endregion
     }

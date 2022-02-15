@@ -43,5 +43,9 @@ namespace Twitter19.Repo
         void EditProfile(int id, IFormFile hImg, IFormFile pImg, string bio);
         public void Follow(int uid, int pid);
         #endregion
+
+        #region Message
+        List<int> GetFollowers(int uid);
+        #endregion
     }
 }

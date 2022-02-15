@@ -30,6 +30,13 @@ namespace Twitter19.Classes
         public string Bio { get; set; }
     }
 
+    public class Profiles
+    {
+        public string Name { get; set; }
+        public string Img { get; set; }
+        public string date { get; set; }
+    }
+
     public class PostDate
     {
         public string Idk(DateTime dateTime)
