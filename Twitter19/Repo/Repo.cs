@@ -204,7 +204,6 @@ namespace Twitter19.Repo
                     Date = new PostDate().Idk(reader.GetDateTime(3)),
                     CommentID = reader.GetInt32(2)
                 };
-
                 Comments.Add(listComment);
             }
             con.Close();
@@ -456,21 +455,55 @@ namespace Twitter19.Repo
         #endregion
 
         #region Message
-        public List<int> GetFollowers(int uid)
+        public List<Profiles> GetFollowers(int uid)
         {
             SqlConnection con = new(connectionString);
             SqlCommand cmd = new("GetFollowers", con);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@UID", uid);
             List<int> FollowerIDs = new();
+            List<Profiles> profiles = new();
             con.Open();
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                FollowerIDs.Add(reader.GetInt32(1));
+                ListProfile listProfile = GetProfile(reader.GetInt32(2));
+                Profiles tItem = new();
+                tItem.Name = listProfile.Name;
+                tItem.id = reader.GetInt32(0);
+                tItem.Img = new Images().ConvertToB64(new Images().Resize(listProfile.PImg, new Size(50, 50)));
+                tItem.date = "Not Now";
+                profiles.Add(tItem);
             }
             con.Close();
-            return FollowerIDs;
+            return profiles;
+        }
+        public void CreateMessage(int uid, int fid, string message)
+        {
+            try
+            {
+                SqlConnection con = new(connectionString);
+                SqlCommand cmd = new("CreateMessage", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@UID", uid);
+                cmd.Parameters.AddWithValue("@FID", fid);
+                cmd.Parameters.AddWithValue("@Message", message);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public List<ListMessages> GetMessages(int uid, int fid)
+        {
+            List<ListMessages> messages = new();
+            
+
         }
         #endregion
     }

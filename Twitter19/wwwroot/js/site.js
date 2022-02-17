@@ -173,11 +173,11 @@ function showPreview(event, id){
 // var base64string = document.getElementById("image").src;
 // var cleanBase64 = base64string.slice(22);
 // var decode = atob(cleanBase64);
-// console.log(cleanBase64);
+// console.g(cleanBase64);
 // console.log(decode);
 
 //#region modal
-// var myModal = document.getElementById('exampleModal')
+// var myModal = documentetElementById('exampleModal')
 // var myInput = document.getElementById('myInput')
 
 // myModal.addEventListener('shown.bs.modal', function () {
@@ -186,11 +186,11 @@ function showPreview(event, id){
 
 function load(idk) {
     if (idk != null) {
-        console.log(idk)
+        //console.log(idk)
         $('#exampleModalLong').modal('show');
     }
     else {
-        console.log("empty")
+        //console.log("empty")
     }
 }
 

@@ -27,7 +27,14 @@ namespace Twitter19.Classes
         }
         public Image Resize(Image img, Size size)
         {
-            return (Image)new Bitmap(img, size);
+            try
+            {
+                return (Image)new Bitmap(img, size);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
         public string ConvertToB64(Image img)
         {

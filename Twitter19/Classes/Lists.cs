@@ -35,6 +35,14 @@ namespace Twitter19.Classes
         public string Name { get; set; }
         public string Img { get; set; }
         public string date { get; set; }
+        public int id { get; set; }
+    }
+
+    public class ListMessages
+    {
+        public string Message { get; set; }
+        public int UserID { get; set; }
+        public int FollowerID { get; set; }
     }
 
     public class PostDate

@@ -79,6 +79,7 @@ create table [UserFollow](
 go
 
 CREATE TABLE [Followers] (
+  [ID] int identity(1,1) not null,
   [UID] int NOT NULL,
   [FID] int NOT NULL,
   [Follow] bit NOT NULL

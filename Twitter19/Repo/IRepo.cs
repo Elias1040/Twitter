@@ -45,7 +45,9 @@ namespace Twitter19.Repo
         #endregion
 
         #region Message
-        List<int> GetFollowers(int uid);
+        List<Profiles> GetFollowers(int uid);
+        void CreateMessage(int uid, int fid, string message);
+        List<ListMessages> GetMessages(int uid, int fid);
         #endregion
     }
 }

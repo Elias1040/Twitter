@@ -1,7 +1,9 @@
 ﻿@page
+@using Microsoft.AspNetCore.Http
 @model Twitter19.Pages.MessageModel
 @{
 }
+
 
 
 <div class="container border rounded-left" style="height: 700px; width: 300px; padding: 0; margin-left: 250px; margin-right: 0;">
@@ -10,15 +12,73 @@
     </form>
     @foreach (var item in Model.Profiles)
     {
-        <div class="border-top pb-3" style="padding-top: 10px">
-            <img class="d-inline-block rounded-circle ml-2 align-self-center" src="data:image/png;base64, @item.PImg" width="50px" height="50px">
-            <div class="d-inline-flex align-items-center ml-2">
-                <h5 class="d-inline-block">@item.Name:</h5>
+        <a asp-page="Message" asp-route-id="@item.id" style="text-decoration: none; color: black;">
+            <div class="border-top pb-3" style="padding-top: 10px">
+                <img class="d-inline-block rounded-circle ml-2 align-self-center" onerror="this.src = '/perm_identity_black_24dp.svg'" src="data:image/png;base64, @item.Img" width="50px" height="50px">
+                <div class="d-inline-flex align-items-center ml-2">
+                    <h5 class="d-inline-block">@item.Name:</h5>
+                </div>
+                <p class="d-inline-block float-right mr-2" style="color: darkgray; font-weight: 600; font-size: 17px;">9 minute/s</p>
             </div>
-            <p class="d-inline-block float-right mr-2" style="color: darkgray; font-weight: 600; font-size: 17px;">9 minute/s</p>
-        </div>
+        </a>
     }
 </div>
 <div class="container border-right border-top border-bottom rounded-right m-0" style="width: 700px; height: 700px; padding: 0;">
-
+    @if (Model.MessageID != 0)
+    {
+        <div class="d-flex flex-column h-100">
+            <div class="w-100 h-100" style="overflow-y:scroll;">
+                <ul id="messagesList"></ul>
+            </div>
+            <div class="container w-100" style="align-self: end">
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-2">User</div>
+                    <div class="col-4"><input type="text" id="userInput" /></div>
+                </div>
+                <div class="row">
+                    <div class="col-2">Message</div>
+                    <div class="col-4"><input type="text" id="messageInput" /></div>
+                </div>
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-6">
+                        <input type="button" id="sendButton" value="Send Message" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script>
+        "use strict";
+
+    var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub", { skipNegotiation: true, transport: signalR.HttpTransportType.WebSockets }).build();
+
+    //Disable the send button until connection is established.
+    document.getElementById("sendButton").disabled = true;
+
+    connection.on("ReceiveMessage", function (message) {
+        var li = document.createElement("li");
+        document.getElementById("messagesList").appendChild(li);
+        li.textContent = `${ message } `;
+    });
+
+    connection.start().then(function () {
+        document.getElementById("sendButton").disabled = false;
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    document.getElementById("sendButton").addEventListener("click", function (event) {
+        var userID = @HttpContext.Session.GetInt32("ID");
+        var followerID = @Model.MessageID;
+        var message = document.getElementById("messageInput").value;
+        connection.invoke("SendMessage", userID, followerID, message).catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+</script>
+@*<script src="~/js/chat.js"></script>*@

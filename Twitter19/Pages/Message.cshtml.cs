@@ -25,26 +25,16 @@ namespace Twitter19.Pages
         [BindProperty]
         public string Name { get; set; }
         public List<Profiles> Profiles { get; set; }
+        public int MessageID { get; set; }
         #endregion
 
-        public IActionResult OnGet()
+        public IActionResult OnGet(int id)
         {
             if (HttpContext.Session.GetString("Logged in") != "1")
                 return RedirectToPage("Login");
             HttpContext.Session.SetString("MPage", "1");
-            Profiles = new();
-            List<int> FollowerIDs = _repo.GetFollowers((int)HttpContext.Session.GetInt32("ID"));
-            foreach (var item in FollowerIDs)
-            {
-                ListProfile listProfile = _repo.GetProfile(item);
-                Profiles profiles = new()
-                {
-                    Name = listProfile.Name,
-                    Img = new Images().ConvertToB64(new Images().Resize(listProfile.PImg, new Size(50, 50))),
-                    date = "Date"
-                };
-                Profiles.Add(profiles);
-            }
+            Profiles = _repo.GetFollowers((int)HttpContext.Session.GetInt32("ID"));
+            MessageID = id;
             return Page();
         }
     }
