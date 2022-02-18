@@ -12,7 +12,7 @@
     </form>
     @foreach (var item in Model.Profiles)
     {
-        <a asp-page="Message" asp-route-id="@item.id" style="text-decoration: none; color: black;">
+        <a asp-page="Message" onclick="return LeaveGroup(@Model.RoomID)" asp-route-id="@item.id" style="text-decoration: none; color: black;">
             <div class="border-top pb-3" style="padding-top: 10px">
                 <img class="d-inline-block rounded-circle ml-2 align-self-center" onerror="this.src = '/perm_identity_black_24dp.svg'" src="data:image/png;base64, @item.Img" width="50px" height="50px">
                 <div class="d-inline-flex align-items-center ml-2">
@@ -24,18 +24,19 @@
     }
 </div>
 <div class="container border-right border-top border-bottom rounded-right m-0" style="width: 700px; height: 700px; padding: 0;">
-    @if (Model.MessageID != 0)
+    @if (Model.FollowerRoomID != 0)
     {
         <div class="d-flex flex-column h-100">
             <div class="w-100 h-100" style="overflow-y:scroll;">
-                <ul id="messagesList"></ul>
+                <ul id="messagesList">
+                    @foreach (var item in Model.Messages)
+                    {
+                        <li>@item.Message</li>
+                    }
+                </ul>
             </div>
             <div class="container w-100" style="align-self: end">
                 <div class="row">&nbsp;</div>
-                <div class="row">
-                    <div class="col-2">User</div>
-                    <div class="col-4"><input type="text" id="userInput" /></div>
-                </div>
                 <div class="row">
                     <div class="col-2">Message</div>
                     <div class="col-4"><input type="text" id="messageInput" /></div>
@@ -59,8 +60,11 @@
     //Disable the send button until connection is established.
     document.getElementById("sendButton").disabled = true;
 
-    connection.on("ReceiveMessage", function (message) {
+    var joined = false;
+
+    connection.on("ReceiveMessage", function (message, join) {
         var li = document.createElement("li");
+        joined = join;
         document.getElementById("messagesList").appendChild(li);
         li.textContent = `${ message } `;
     });
@@ -73,12 +77,32 @@
 
     document.getElementById("sendButton").addEventListener("click", function (event) {
         var userID = @HttpContext.Session.GetInt32("ID");
-        var followerID = @Model.MessageID;
+        var followerID = @Model.FollowerRoomID;
         var message = document.getElementById("messageInput").value;
-        connection.invoke("SendMessage", userID, followerID, message).catch(function (err) {
+        var roomID = `${ @Model.RoomID }`;
+        if (joined){
+        connection.invoke("SendMessage", userID, followerID, message, roomID, true).catch(function (err) {
             return console.error(err.toString());
         });
+        }
+        else{
+            connection.invoke("SendMessage", userID, followerID, message, roomID, false).catch(function (err) {
+            return console.error(err.toString());
+        });
+        }
         event.preventDefault();
     });
+
+//    connection.onclose(async () => {
+//    await connection.start();
+//});
+
+    function LeaveGroup (roomID) {
+            connection.invoke("LeaveRoom", `${roomID}`).catch(function (err) {
+                console.log("a")
+            return console.error(err.toString());
+        });
+    }
+
 </script>
 @*<script src="~/js/chat.js"></script>*@

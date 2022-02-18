@@ -502,8 +502,90 @@ namespace Twitter19.Repo
         public List<ListMessages> GetMessages(int uid, int fid)
         {
             List<ListMessages> messages = new();
-            
+            SqlConnection con = new(connectionString);
+            SqlCommand cmd = new("GetMessages", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@UID", uid);
+            cmd.Parameters.AddWithValue("@FID", fid);
+            con.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                ListMessages messagesItem = new ListMessages()
+                {
+                    UserID = reader.GetInt32("UID"),
+                    FollowerID = reader.GetInt32("FID"),
+                    Message = reader.GetString("Message"),
+                    Date = reader.GetDateTime("Date")
+                };
+                messages.Add(messagesItem);
+            }
+            con.Close();
+            return messages;
+        }
 
+        public int GetFollow(int uid, int mid)
+        {
+            SqlConnection con = new(connectionString);
+            SqlCommand cmd = new("GetFollow", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@UID", uid);
+            cmd.Parameters.AddWithValue("@MID", mid);
+            int fid = 0;
+            con.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                fid = reader.GetInt32("FID");
+            }
+            con.Close();
+            return fid;
+        }
+
+        public int? GetRoomID(int uid, int fid)
+        {
+            SqlConnection con = new(connectionString);
+            SqlCommand cmd = new("GetRoomID", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@UID", uid);
+            cmd.Parameters.AddWithValue("@FID", fid);
+            con.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            int? roomID = 0;
+            while (reader.Read())
+            {
+                roomID = reader.GetInt32("ID");
+            }
+            con.Close();
+            return roomID;
+        }
+
+        public void CreateRoom(int uid, int fid)
+        {
+            SqlConnection con = new(connectionString);
+            SqlCommand cmd = new("GetAllFollowers", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            bool Exist = true;
+            con.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                if (reader.GetInt32("UID") == uid && reader.GetInt32("FID") == fid || reader.GetInt32("FID") == uid && reader.GetInt32("UID") == fid)
+                {
+                    Exist = true;
+                }
+            }
+            con.Close();
+            if (Exist)
+            {
+                con.Open();
+                cmd = new("CreateRoom", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@UID", uid);
+                cmd.Parameters.AddWithValue("@FID", fid);
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
         }
         #endregion
     }

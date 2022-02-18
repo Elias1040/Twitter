@@ -43,6 +43,7 @@ namespace Twitter19.Classes
         public string Message { get; set; }
         public int UserID { get; set; }
         public int FollowerID { get; set; }
+        public DateTime Date { get; set; }
     }
 
     public class PostDate

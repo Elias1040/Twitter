@@ -90,13 +90,20 @@ CREATE TABLE [Followers] (
 GO
 
 CREATE TABLE [dbo].[Messages](
-	[ID] int NOT NULL,
+	[ID] int IDENTITY(1,1) NOT NULL,
 	[UID] int NOT NULL,
 	[FID] int NOT NULL,
 	[Message] varchar(max) NOT NULL,
 	[Date] [datetime] NOT NULL
 )
 GO
+
+create table ChatRooms(
+	ID int identity(1, 1) not null,
+	UID1 int not null,
+	UID2 int not null
+)
+go
 
 alter table [Messages]
 add foreign key (UID, FID) references Followers(UID, FID)
@@ -106,6 +113,11 @@ go
 
 
 	------------SP Select------------
+
+	create procedure GetAllFollowers
+	as
+		select * from Followers
+	go
 
 	CREATE procedure CreateComment
 	@tweetID int, @userID int, @comment varchar(50)
@@ -221,7 +233,7 @@ go
 	create procedure GetFollowers
 	@UID int
 	as
-		select * from Followers
+		select * from UserFollow
 		where UID = @UID
 	go
 
@@ -246,6 +258,12 @@ go
 		where UID = @UID and FID = @FID 
 	go
 
+	create procedure GetRoomID
+	@UID int, @FID int
+	as
+		select ID from ChatRooms
+		where UID1 = @UID and UID2 = @FID
+	go
 
 	------------SP Create------------
 
@@ -289,7 +307,12 @@ go
 		values (@UID, @FID, @Message, getdate())
 	go
 
-
+	create procedure CreateRoom
+	@UID int, @FID int
+	as
+		insert into ChatRooms(UID1, UID2)
+		values (@UID, @FID)
+	go
 	------------SP Update------------
 
 	create procedure UpdateFollowerID

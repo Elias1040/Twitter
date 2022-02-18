@@ -26,6 +26,7 @@ namespace Twitter19.Pages
                 return RedirectToPage("Profile");
 
             _repo.Follow((int)HttpContext.Session.GetInt32("ID"), id);
+            _repo.CreateRoom((int)HttpContext.Session.GetInt32("ID"), id);
             return RedirectToPage("OtherProfiles", new { id = id });
         }
     }

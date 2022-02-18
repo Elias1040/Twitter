@@ -48,6 +48,8 @@ namespace Twitter19.Repo
         List<Profiles> GetFollowers(int uid);
         void CreateMessage(int uid, int fid, string message);
         List<ListMessages> GetMessages(int uid, int fid);
+        int? GetRoomID (int uid, int fid);
+        void CreateRoom(int uid, int fid);
         #endregion
     }
 }

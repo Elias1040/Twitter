@@ -17,10 +17,34 @@ namespace Twitter19.Hubs
         }
         #endregion
 
-        public async Task SendMessage(int userID, int followerID, string message)
+        public async Task SendMessage(int userID, int followerID, string message, string roomID, bool join)
         {
-            _repo.CreateMessage(userID, followerID, message);
-            await Clients.All.SendAsync("ReceiveMessage", message);
+            if (!join)
+            {
+                await JoinRoom(roomID).ConfigureAwait(false);
+                try
+                {
+                    _repo.CreateMessage(userID, followerID, message);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+                await Clients.Group(roomID).SendAsync("ReceiveMessage", message, join);
+            }
+            else
+                await Clients.Group(roomID.ToString()).SendAsync("ReceiveMessage", message, join);
+
+        }
+
+        public async Task JoinRoom(string roomID)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, roomID);
+        }
+
+        public async Task LeaveRoom(string roomID)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomID);
         }
     }
 }
