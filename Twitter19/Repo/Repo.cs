@@ -470,7 +470,7 @@ namespace Twitter19.Repo
                 ListProfile listProfile = GetProfile(reader.GetInt32(2));
                 Profiles tItem = new();
                 tItem.Name = listProfile.Name;
-                tItem.id = reader.GetInt32(0);
+                tItem.id = reader.GetInt32(2);
                 tItem.Img = new Images().ConvertToB64(new Images().Resize(listProfile.PImg, new Size(50, 50)));
                 tItem.date = "Not Now";
                 profiles.Add(tItem);

@@ -12,9 +12,9 @@
     </form>
     @foreach (var item in Model.Profiles)
     {
-        <a asp-page="Message" onclick="return LeaveGroup(@Model.RoomID)" asp-route-id="@item.id" style="text-decoration: none; color: black;">
+        <a asp-page="Message" onclick="" asp-route-id="@item.id" style="text-decoration: none; color: black;">
             <div class="border-top pb-3" style="padding-top: 10px">
-                <img class="d-inline-block rounded-circle ml-2 align-self-center" onerror="this.src = '/perm_identity_black_24dp.svg'" src="data:image/png;base64, @item.Img" width="50px" height="50px">
+                <img class="d-inline-block rounded-circle ml-2 align-self-center" onerror="this.src = '/perm_identity_black_24dp.svg'" src="data:image/png;base64, @item.Img" width="50" height="50">
                 <div class="d-inline-flex align-items-center ml-2">
                     <h5 class="d-inline-block">@item.Name:</h5>
                 </div>
@@ -53,56 +53,58 @@
 </div>
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
 <script>
-        "use strict";
+   "use strict";
+    
 
-    var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub", { skipNegotiation: true, transport: signalR.HttpTransportType.WebSockets }).build();
+        var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub", { skipNegotiation: true, transport: signalR.HttpTransportType.WebSockets }).build();
 
-    //Disable the send button until connection is established.
-    document.getElementById("sendButton").disabled = true;
+        document.getElementById("sendButton").disabled = true;
 
-    var joined = false;
+        var joined = true;
 
-    connection.on("ReceiveMessage", function (message, join) {
-        var li = document.createElement("li");
-        joined = join;
-        document.getElementById("messagesList").appendChild(li);
-        li.textContent = `${ message } `;
-    });
-
-    connection.start().then(function () {
-        document.getElementById("sendButton").disabled = false;
-    }).catch(function (err) {
-        return console.error(err.toString());
-    });
-
-    document.getElementById("sendButton").addEventListener("click", function (event) {
-        var userID = @HttpContext.Session.GetInt32("ID");
-        var followerID = @Model.FollowerRoomID;
-        var message = document.getElementById("messageInput").value;
-        var roomID = `${ @Model.RoomID }`;
-        if (joined){
-        connection.invoke("SendMessage", userID, followerID, message, roomID, true).catch(function (err) {
+        connection.start().then(function () {
+            document.getElementById("sendButton").disabled = false;
+        }).catch(function (err) {
             return console.error(err.toString());
+        }).then(function () {
+            connection.invoke("JoinRoom", `${@Model.RoomID}`).catch(function (err) {
+                joined = false;
+                console.log("a");
+                return console.error(err.toString());
+            });
         });
-        }
-        else{
-            connection.invoke("SendMessage", userID, followerID, message, roomID, false).catch(function (err) {
-            return console.error(err.toString());
+
+        connection.on("ReceiveMessage", function (message, join) {
+            var li = document.createElement("li");
+            joined = join;
+            document.getElementById("messagesList").appendChild(li);
+            li.textContent = `${ message }`;
         });
-        }
-        event.preventDefault();
-    });
 
-//    connection.onclose(async () => {
-//    await connection.start();
-//});
 
-    function LeaveGroup (roomID) {
-            connection.invoke("LeaveRoom", `${roomID}`).catch(function (err) {
-                console.log("a")
-            return console.error(err.toString());
+        document.getElementById("sendButton").addEventListener("click", function (event) {
+            var userID = @HttpContext.Session.GetInt32("ID");
+            var followerID = @Model.FollowerRoomID;
+            var message = document.getElementById("messageInput").value;
+            var roomID = `${ @Model.RoomID }`;
+            if (joined){
+                connection.invoke("SendMessageToGroup", userID, followerID, message, roomID, true).catch(function (err) {
+                return console.error(err.toString());
+                });
+            }
+            else{
+                connection.invoke("SendMessageToGroup", userID, followerID, message, roomID, false).catch(function (err) {
+                return console.error(err.toString());
+                });
+            }
+            event.preventDefault();
         });
-    }
 
+        //return connection
+    
+    @*var con = window.addEventListener("load", myInit, true); function myInit() {
+        LeaveGroup(@Model.RoomID)
+    };*@
+
+    
 </script>
-@*<script src="~/js/chat.js"></script>*@

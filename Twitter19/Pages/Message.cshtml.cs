@@ -48,6 +48,7 @@ namespace Twitter19.Pages
                 {
                     RoomID = _repo.GetRoomID(id, (int)HttpContext.Session.GetInt32("ID"));
                 }
+                Console.WriteLine(RoomID);
             }
             return Page();
         }

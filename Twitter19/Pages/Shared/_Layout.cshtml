@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 @using Microsoft.AspNetCore.Http;
-<body onload="load()">
+<body>
     <div class="container mt-4">
         <main role="main" class="pb-3 d-flex justify-content-center">
             @if (Context.Session.GetString("Logged in") == "1")
