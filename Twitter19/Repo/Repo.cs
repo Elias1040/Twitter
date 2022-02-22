@@ -30,17 +30,19 @@ namespace Twitter19.Repo
             cmd.CommandType = CommandType.StoredProcedure;
             List<ListPost> Posts = new();
             con.Open();
-            SqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+            foreach (DataRow item in dt.Rows)
             {
-                ListPost listPost = new();
-                listPost.Name = reader.GetString(0);
-                listPost.Message = reader.GetString(1);
-                listPost.TweetID = reader.GetInt32(2);
-                listPost.Date = new PostDate().Idk(reader.GetDateTime(3));
+                ListPost listPost = new ListPost();
+                listPost.Name = (string)item[0];
+                listPost.Message = (string)item[1];
+                listPost.TweetID = (int)item[2];
+                listPost.Date = new PostDate().Idk((DateTime)item[3]);
                 try
                 {
-                    MemoryStream ms = new((byte[])reader[4]);
+                    MemoryStream ms = new MemoryStream((byte[])item[4]);
                     Image img = Image.FromStream(ms);
                     if (img.Width >= 500 || img.Height >= 500)
                     {
@@ -48,13 +50,39 @@ namespace Twitter19.Repo
                         listPost.Image = new Images().ConvertToB64(reImg);
                     }
                     else
-                        listPost.Image = Convert.ToBase64String((byte[])reader[4]);
-
+                        listPost.Image = Convert.ToBase64String((byte[])item[4]);
                 }
                 catch (Exception)
-                { }
+                {
+
+                }
                 Posts.Add(listPost);
             }
+            //SqlDataReader reader = cmd.ExecuteReader();
+            //while (reader.Read())
+            //{
+            //    ListPost listPost = new();
+            //    listPost.Name = reader.GetString(0);
+            //    listPost.Message = reader.GetString(1);
+            //    listPost.TweetID = reader.GetInt32(2);
+            //    listPost.Date = new PostDate().Idk(reader.GetDateTime(3));
+            //    try
+            //    {
+            //        MemoryStream ms = new((byte[])reader[4]);
+            //        Image img = Image.FromStream(ms);
+            //        if (img.Width >= 500 || img.Height >= 500)
+            //        {
+            //            Image reImg = new Images().Resize(new Bitmap(img), new Size(500, 400));
+            //            listPost.Image = new Images().ConvertToB64(reImg);
+            //        }
+            //        else
+            //            listPost.Image = Convert.ToBase64String((byte[])reader[4]);
+
+            //    }
+            //    catch (Exception)
+            //    { }
+            //    Posts.Add(listPost);
+            //}
             con.Close();
             Posts.Reverse();
             return Posts;
@@ -67,11 +95,18 @@ namespace Twitter19.Repo
             cmd.Parameters.AddWithValue("@UID", uid);
             List<bool> Sentiment = new();
             con.Open();
-            SqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+            foreach (DataRow item in dt.Rows)
             {
-                Sentiment.Add(reader.GetBoolean(0));
+                Sentiment.Add((bool)item[0]);
             }
+            //SqlDataReader reader = cmd.ExecuteReader();
+            //while (reader.Read())
+            //{
+            //    Sentiment.Add(reader.GetBoolean(0));
+            //}
             con.Close();
             Sentiment.Reverse();
             return Sentiment;
@@ -132,11 +167,18 @@ namespace Twitter19.Repo
             cmd = new("GetAllUserIDs", con);
             List<int> Users = new();
             con.Open();
-            SqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+            foreach (DataRow item in dt.Rows)
             {
-                Users.Add(reader.GetInt32(0));
+                Users.Add((int)item[0]);
             }
+            //SqlDataReader reader = cmd.ExecuteReader();
+            //while (reader.Read())
+            //{
+            //    Users.Add(reader.GetInt32(0));
+            //}
             con.Close();
             foreach (var item in Users)
             {
@@ -160,15 +202,17 @@ namespace Twitter19.Repo
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@tweetID", id);
             con.Open();
-            SqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+            foreach (DataRow item in dt.Rows)
             {
                 ListPost listPost = new();
-                listPost.Name = reader.GetString(0);
-                listPost.Message = reader.GetString(1);
+                listPost.Name = (string)item[0];
+                listPost.Message = (string)item[1];
                 try
                 {
-                    MemoryStream ms = new((byte[])reader[2]);
+                    MemoryStream ms = new((byte[])item[2]);
                     Image img = Image.FromStream(ms);
                     if (img.Width >= 500 || img.Height >= 500)
                     {
@@ -176,12 +220,34 @@ namespace Twitter19.Repo
                         listPost.Image = new Images().ConvertToB64(reImg);
                     }
                     else
-                        listPost.Image = Convert.ToBase64String((byte[])reader[4]);
+                        listPost.Image = Convert.ToBase64String((byte[])item[4]);
                 }
                 catch (Exception)
                 { }
                 Posts.Add(listPost);
             }
+            //SqlDataReader reader = cmd.ExecuteReader();
+            //while (reader.Read())
+            //{
+            //    ListPost listPost = new();
+            //    listPost.Name = reader.GetString(0);
+            //    listPost.Message = reader.GetString(1);
+            //    try
+            //    {
+            //        MemoryStream ms = new((byte[])reader[2]);
+            //        Image img = Image.FromStream(ms);
+            //        if (img.Width >= 500 || img.Height >= 500)
+            //        {
+            //            Image reImg = new Images().Resize(new Bitmap(img), new Size(300, 150));
+            //            listPost.Image = new Images().ConvertToB64(reImg);
+            //        }
+            //        else
+            //            listPost.Image = Convert.ToBase64String((byte[])reader[4]);
+            //    }
+            //    catch (Exception)
+            //    { }
+            //    Posts.Add(listPost);
+            //}
             con.Close();
             Posts.Reverse();
             return Posts;
@@ -194,18 +260,32 @@ namespace Twitter19.Repo
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@id", tid);
             con.Open();
-            SqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+            foreach (DataRow item in dt.Rows)
             {
                 ListComment listComment = new()
                 {
-                    Name = reader.GetString(0),
-                    Comment = reader.GetString(1),
-                    Date = new PostDate().Idk(reader.GetDateTime(3)),
-                    CommentID = reader.GetInt32(2)
+                    Name = (string)item[0],
+                    Comment = (string)item[1],
+                    Date = new PostDate().Idk((DateTime)item[3]),
+                    CommentID = (int)item[2]
                 };
                 Comments.Add(listComment);
             }
+            //SqlDataReader reader = cmd.ExecuteReader();
+            //while (reader.Read())
+            //{
+            //    ListComment listComment = new()
+            //    {
+            //        Name = reader.GetString(0),
+            //        Comment = reader.GetString(1),
+            //        Date = new PostDate().Idk(reader.GetDateTime(3)),
+            //        CommentID = reader.GetInt32(2)
+            //    };
+            //    Comments.Add(listComment);
+            //}
             con.Close();
             Comments.Reverse();
             return Comments;
@@ -235,11 +315,18 @@ namespace Twitter19.Repo
             cmd.Parameters.AddWithValue("@UID", uid);
             cmd.Parameters.AddWithValue("@TID", tid);
             con.Open();
-            SqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+            foreach (DataRow item in dt.Rows)
             {
-                CommentSentiment.Add(reader.GetBoolean(0));
+                CommentSentiment.Add((bool)item[0]);
             }
+            //SqlDataReader reader = cmd.ExecuteReader();
+            //while (reader.Read())
+            //{
+            //    CommentSentiment.Add(reader.GetBoolean(0));
+            //}
             con.Close();
             CommentSentiment.Reverse();
             return CommentSentiment;
@@ -259,11 +346,18 @@ namespace Twitter19.Repo
             cmd = new("GetAllUserIDs", con);
             cmd.CommandType = CommandType.StoredProcedure;
             con.Open();
-            SqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+            DataTable dt = new();
+            adapter.Fill(dt);
+            foreach (DataRow item in dt.Rows)
             {
-                Users.Add(reader.GetInt32(0));
+                Users.Add((int)item[0]);
             }
+            //SqlDataReader reader = cmd.ExecuteReader();
+            //while (reader.Read())
+            //{
+            //    Users.Add(reader.GetInt32(0));
+            //}
             con.Close();
             foreach (var item in Users)
             {
@@ -298,16 +392,28 @@ namespace Twitter19.Repo
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Email", email);
             con.Open();
-            SqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+            foreach (DataRow item in dt.Rows)
             {
-                if (Hash_Salt.PasswordAreEqual(password, reader.GetString("Password"), reader.GetString("Salt")))
+                if (Hash_Salt.PasswordAreEqual(password, (string)item["Password"], (string)item["Salt"]))
                 {
-                    int id = reader.GetInt32(0);
+                    int id = (int)item[0];
                     con.Close();
                     return id;
                 }
             }
+            //SqlDataReader reader = cmd.ExecuteReader();
+            //while (reader.Read())
+            //{
+            //    if (Hash_Salt.PasswordAreEqual(password, reader.GetString("Password"), reader.GetString("Salt")))
+            //    {
+            //        int id = reader.GetInt32(0);
+            //        con.Close();
+            //        return id;
+            //    }
+            //}
             con.Close();
             return 0;
         }
@@ -350,15 +456,27 @@ namespace Twitter19.Repo
             SqlCommand cmd = new("GetTweets", con);
             cmd.CommandType = CommandType.StoredProcedure;
             con.Open();
-            SqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+            foreach (DataRow item in dt.Rows)
             {
                 SqlCommand cmd1 = new("DefaultSentiment", con);
                 cmd1.CommandType = CommandType.StoredProcedure;
                 cmd1.Parameters.AddWithValue("@UID", id);
-                cmd1.Parameters.AddWithValue("@TID", reader.GetInt32(2));
+                cmd1.Parameters.AddWithValue("@TID", (int)item[2]);
                 cmd1.ExecuteNonQuery();
             }
+
+            //SqlDataReader reader = cmd.ExecuteReader();
+            //while (reader.Read())
+            //{
+            //    SqlCommand cmd1 = new("DefaultSentiment", con);
+            //    cmd1.CommandType = CommandType.StoredProcedure;
+            //    cmd1.Parameters.AddWithValue("@UID", id);
+            //    cmd1.Parameters.AddWithValue("@TID", reader.GetInt32(2));
+            //    cmd1.ExecuteNonQuery();
+            //}
             con.Close();
         }
         public void DefaultCommentSentiment(int id)
@@ -371,16 +489,28 @@ namespace Twitter19.Repo
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@TID", item.TweetID);
                 con.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                DataTable dt = new();
+                adapter.Fill(dt);
+                foreach (DataRow row in dt.Rows)
                 {
                     SqlCommand cmd1 = new("DefaultCommentSentiment", con);
                     cmd1.CommandType = CommandType.StoredProcedure;
                     cmd1.Parameters.AddWithValue("@TID", item.TweetID);
-                    cmd1.Parameters.AddWithValue("@CID", reader.GetInt32(0));
+                    cmd1.Parameters.AddWithValue("@CID", row[0]);
                     cmd1.Parameters.AddWithValue("@UID", id);
                     cmd1.ExecuteNonQuery();
                 }
+                //SqlDataReader reader = cmd.ExecuteReader();
+                //while (reader.Read())
+                //{
+                //    SqlCommand cmd1 = new("DefaultCommentSentiment", con);
+                //    cmd1.CommandType = CommandType.StoredProcedure;
+                //    cmd1.Parameters.AddWithValue("@TID", item.TweetID);
+                //    cmd1.Parameters.AddWithValue("@CID", reader.GetInt32(0));
+                //    cmd1.Parameters.AddWithValue("@UID", id);
+                //    cmd1.ExecuteNonQuery();
+                //}
                 con.Close();
             }
         }
@@ -394,17 +524,19 @@ namespace Twitter19.Repo
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@id", id);
             con.Open();
-            SqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+            foreach (DataRow row in dt.Rows)
             {
                 ListProfile listProfiles = new();
-                listProfiles.Name = reader.GetString("Name");
+                listProfiles.Name = (string)row["Name"];
                 try
                 {
                     Images images = new();
-                    listProfiles.PImg = images.ConvertToImage((byte[])reader["ProfileImg"]);
-                    listProfiles.HImg = images.ConvertToImage((byte[])reader["HeaderImg"]);
-                    listProfiles.Bio = reader.GetString("Bio");
+                    listProfiles.PImg = images.ConvertToImage((byte[])row["ProfileImg"]);
+                    listProfiles.HImg = images.ConvertToImage((byte[])row["HeaderImg"]);
+                    listProfiles.Bio = (string)row["Bio"];
                 }
                 catch (Exception)
                 {
@@ -412,6 +544,24 @@ namespace Twitter19.Repo
                 }
                 return listProfiles;
             }
+            //SqlDataReader reader = cmd.ExecuteReader();
+            //while (reader.Read())
+            //{
+            //    ListProfile listProfiles = new();
+            //    listProfiles.Name = reader.GetString("Name");
+            //    try
+            //    {
+            //        Images images = new();
+            //        listProfiles.PImg = images.ConvertToImage((byte[])reader["ProfileImg"]);
+            //        listProfiles.HImg = images.ConvertToImage((byte[])reader["HeaderImg"]);
+            //        listProfiles.Bio = reader.GetString("Bio");
+            //    }
+            //    catch (Exception)
+            //    {
+
+            //    }
+            //    return listProfiles;
+            //}
             con.Close();
             return null;
         }
@@ -459,22 +609,34 @@ namespace Twitter19.Repo
         {
             SqlConnection con = new(connectionString);
             SqlCommand cmd = new("GetFollowers", con);
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@UID", uid);
-            List<int> FollowerIDs = new();
             List<Profiles> profiles = new();
             con.Open();
-            SqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
+            DataTable dt = new();
+            adapter.Fill(dt);
+            foreach (DataRow row in dt.Rows)
             {
-                ListProfile listProfile = GetProfile(reader.GetInt32(2));
+                ListProfile listProfile = GetProfile((int)row[2]);
                 Profiles tItem = new();
                 tItem.Name = listProfile.Name;
-                tItem.id = reader.GetInt32(2);
+                tItem.id = (int)row[2];
                 tItem.Img = new Images().ConvertToB64(new Images().Resize(listProfile.PImg, new Size(50, 50)));
                 tItem.date = "Not Now";
                 profiles.Add(tItem);
             }
+            //SqlDataReader reader = cmd.ExecuteReader();
+            //while (reader.Read())
+            //{
+            //    ListProfile listProfile = GetProfile(reader.GetInt32(2));
+            //    Profiles tItem = new();
+            //    tItem.Name = listProfile.Name;
+            //    tItem.id = reader.GetInt32(2);
+            //    tItem.Img = new Images().ConvertToB64(new Images().Resize(listProfile.PImg, new Size(50, 50)));
+            //    tItem.date = "Not Now";
+            //    profiles.Add(tItem);
+            //}
             con.Close();
             return profiles;
         }

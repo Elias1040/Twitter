@@ -67,7 +67,7 @@
         }).catch(function (err) {
             return console.error(err.toString());
         }).then(function () {
-            connection.invoke("JoinRoom", `${@Model.RoomID}`).catch(function (err) {
+            connection.invoke("JoinRoom", @HttpContext.Session.GetInt32("ID")).catch(function (err) {
                 joined = false;
                 console.log("a");
                 return console.error(err.toString());
@@ -78,7 +78,7 @@
             var li = document.createElement("li");
             joined = join;
             document.getElementById("messagesList").appendChild(li);
-            li.textContent = `${ message }`;
+            li.textContent = message;
         });
 
 
@@ -86,14 +86,13 @@
             var userID = @HttpContext.Session.GetInt32("ID");
             var followerID = @Model.FollowerRoomID;
             var message = document.getElementById("messageInput").value;
-            var roomID = `${ @Model.RoomID }`;
             if (joined){
-                connection.invoke("SendMessageToGroup", userID, followerID, message, roomID, true).catch(function (err) {
+                connection.invoke("SendMessageToGroup", userID, followerID, message, true).catch(function (err) {
                 return console.error(err.toString());
                 });
             }
             else{
-                connection.invoke("SendMessageToGroup", userID, followerID, message, roomID, false).catch(function (err) {
+                connection.invoke("SendMessageToGroup", userID, followerID, message, false).catch(function (err) {
                 return console.error(err.toString());
                 });
             }

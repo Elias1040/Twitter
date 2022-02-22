@@ -42,13 +42,7 @@ namespace Twitter19.Pages
             {
                 Messages = _repo.GetMessages((int)HttpContext.Session.GetInt32("ID"), id);
                 Messages.AddRange(_repo.GetMessages(id, (int)HttpContext.Session.GetInt32("ID")));
-                Messages.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
-                RoomID = _repo.GetRoomID((int)HttpContext.Session.GetInt32("ID"), id);
-                if (RoomID == 0)
-                {
-                    RoomID = _repo.GetRoomID(id, (int)HttpContext.Session.GetInt32("ID"));
-                }
-                Console.WriteLine(RoomID);
+                Messages.Sort((x, y) => DateTime.Compare(x.Date, y.Date));                
             }
             return Page();
         }
