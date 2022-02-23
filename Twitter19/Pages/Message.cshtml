@@ -28,24 +28,40 @@
     {
         <div class="d-flex flex-column h-100">
             <div class="w-100 h-100" style="overflow-y:scroll;">
-                <ul id="messagesList">
+                <ul id="messagesList" class="d-flex flex-column">
+
                     @foreach (var item in Model.Messages)
                     {
-                        <li>@item.Message</li>
+                            @if (item.UserID == HttpContext.Session.GetInt32("ID"))
+                            {
+                                <li class="message1 m-2">
+                                    <div class="divmessage1">
+                                        <p style="margin-left: 10px; margin-bottom: 0;">@item.Message</p>
+                                    </div>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="message2 m-2">
+                                    <div class="divmessage2">
+                                        <p style="margin-left: 10px; margin-bottom: 0;">@item.Message</p>
+                                    </div>
+                                </li>
+                            }   
                     }
                 </ul>
             </div>
-            <div class="container w-100" style="align-self: end">
-                <div class="row">&nbsp;</div>
-                <div class="row">
-                    <div class="col-2">Message</div>
-                    <div class="col-4"><input type="text" id="messageInput" /></div>
-                </div>
-                <div class="row">&nbsp;</div>
-                <div class="row">
-                    <div class="col-6">
-                        <input type="button" id="sendButton" value="Send Message" />
-                    </div>
+        </div>
+        <div class="container w-100" style="align-self: end">
+            <div class="row">&nbsp;</div>
+            <div class="row">
+                <div class="col-2">Message</div>
+                <div class="col-4"><input type="text" id="messageInput" /></div>
+            </div>
+            <div class="row">&nbsp;</div>
+            <div class="row">
+                <div class="col-6">
+                    <input type="button" id="sendButton" value="Send Message" />
                 </div>
             </div>
         </div>
@@ -53,57 +69,83 @@
 </div>
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
 <script>
-   "use strict";
-    
-
-        var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub", { skipNegotiation: true, transport: signalR.HttpTransportType.WebSockets }).build();
-
-        document.getElementById("sendButton").disabled = true;
-
-        var joined = true;
-
-        connection.start().then(function () {
-            document.getElementById("sendButton").disabled = false;
-        }).catch(function (err) {
-            return console.error(err.toString());
-        }).then(function () {
-            connection.invoke("JoinRoom", @HttpContext.Session.GetInt32("ID")).catch(function (err) {
-                joined = false;
-                console.log("a");
-                return console.error(err.toString());
-            });
-        });
-
-        connection.on("ReceiveMessage", function (message, join) {
-            var li = document.createElement("li");
-            joined = join;
-            document.getElementById("messagesList").appendChild(li);
-            li.textContent = message;
-        });
+    "use strict";
 
 
-        document.getElementById("sendButton").addEventListener("click", function (event) {
-            var userID = @HttpContext.Session.GetInt32("ID");
-            var followerID = @Model.FollowerRoomID;
-            var message = document.getElementById("messageInput").value;
-            if (joined){
-                connection.invoke("SendMessageToGroup", userID, followerID, message, true).catch(function (err) {
-                return console.error(err.toString());
-                });
-            }
-            else{
-                connection.invoke("SendMessageToGroup", userID, followerID, message, false).catch(function (err) {
-                return console.error(err.toString());
-                });
-            }
-            event.preventDefault();
-        });
+         var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub", { skipNegotiation: true, transport: signalR.HttpTransportType.WebSockets }).build();
 
-        //return connection
-    
+         document.getElementById("sendButton").disabled = true;
+
+         var joined = true;
+
+         connection.start().then(function () {
+             document.getElementById("sendButton").disabled = false;
+         }).catch(function (err) {
+             return console.error(err.toString());
+         }).then(function () {
+             connection.invoke("JoinRoom", @HttpContext.Session.GetInt32("ID")).catch(function (err) {
+                 joined = false;
+                 console.log("a");
+                 return console.error(err.toString());
+             });
+         });
+
+         connection.on("ReceiveMessage", function (message, join, userID) {
+             if (userID === @HttpContext.Session.GetInt32("ID")){
+                joined = join;
+                var li = document.createElement("li");
+                li.classList.add("m-2")
+                document.getElementById("messagesList").appendChild(li);
+                var div = document.createElement("div");
+                li.appendChild(div);
+                var p = document.createElement("p");
+                div.appendChild(p);
+                p.textContent = message;
+                p.style.marginLeft = "10px";
+                p.style.marginBottom = "0";
+                li.classList.add("message1");
+                div.classList.add("divmessage1");
+             }
+             else {
+                joined = join;
+                var li = document.createElement("li");
+                li.classList.add("m-2")
+                document.getElementById("messagesList").appendChild(li);
+                var div = document.createElement("div");
+                li.appendChild(div);
+                var p = document.createElement("p");
+                div.appendChild(p);
+                p.textContent = message;
+                p.style.marginLeft = "10px";
+                p.style.marginBottom = "0";
+                li.classList.add("message2");
+                div.classList.add("divmessage2");
+             }
+         });
+
+
+         document.getElementById("sendButton").addEventListener("click", function (event) {
+             var userID = @HttpContext.Session.GetInt32("ID");
+             var followerID = @Model.FollowerRoomID;
+             var message = document.getElementById("messageInput").value;
+             if (joined){
+                 connection.invoke("SendMessageToGroup", userID, followerID, message, true).catch(function (err) {
+                 return console.error(err.toString());
+                 });
+             }
+             else{
+                 connection.invoke("SendMessageToGroup", userID, followerID, message, false).catch(function (err) {
+                 return console.error(err.toString());
+                 });
+             }
+             event.preventDefault();
+         });
+
+         //return connection
+
     @*var con = window.addEventListener("load", myInit, true); function myInit() {
         LeaveGroup(@Model.RoomID)
-    };*@
+        };*@
 
-    
+
 </script>

@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
+using System.Collections.Generic;
 using Twitter19.Classes;
 using Twitter19.Repo;
 
@@ -14,22 +11,28 @@ namespace Twitter19.Pages
     public class MessageModel : PageModel
     {
         #region privateReadonly
+
         private readonly IRepo _repo;
+
         public MessageModel(IRepo repo)
         {
             _repo = repo;
         }
-        #endregion
+
+        #endregion privateReadonly
 
         #region Properties
+
         [BindProperty]
         public string Name { get; set; }
+
         public List<Profiles> Profiles { get; set; }
         public List<ListMessages> Messages { get; set; }
 
         public int FollowerRoomID { get; set; }
         public int? RoomID { get; set; }
-        #endregion
+
+        #endregion Properties
 
         public IActionResult OnGet(int id)
         {
@@ -42,7 +45,7 @@ namespace Twitter19.Pages
             {
                 Messages = _repo.GetMessages((int)HttpContext.Session.GetInt32("ID"), id);
                 Messages.AddRange(_repo.GetMessages(id, (int)HttpContext.Session.GetInt32("ID")));
-                Messages.Sort((x, y) => DateTime.Compare(x.Date, y.Date));                
+                Messages.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
             }
             return Page();
         }

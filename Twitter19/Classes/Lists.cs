@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Twitter19.Classes
 {
@@ -14,6 +11,7 @@ namespace Twitter19.Classes
         public string Date { get; set; }
         public int TweetID { get; set; }
     }
+
     public class ListComment
     {
         public string Comment { get; set; }

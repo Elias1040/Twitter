@@ -52,7 +52,7 @@ button.accept-policy {
 }
 
 /* Sticky footer styles
--------------------------------------------------- */
+    -------------------------------------------------- */
 html {
     position: relative;
     min-height: 100%;
@@ -338,5 +338,35 @@ pre {
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 400;
     font-size: 18px;
+}
+
+.message1 {
+    display: flex;
+    justify-content: right;
+    list-style: none;
+}
+
+.divmessage1 {
+    background-color: cyan;
+    color: white;
+    text-decoration: none;
+    width: 120px;
+    margin-right: 22px;
+    padding: 8px;
+    border-radius: 20px;
+}
+
+.message2 {
+    display: flex;
+    justify-content: left;
+    list-style: none;
+}
+
+.divmessage2 {
+    text-decoration: none;
+    width: 120px;
+    padding: 8px;
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.08);
 }
 /*#endregion*/

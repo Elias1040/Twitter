@@ -6,8 +6,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Twitter19.Classes;
 
 namespace Twitter19.Repo
@@ -15,14 +13,18 @@ namespace Twitter19.Repo
     public class Repo : IRepo
     {
         #region PrivateReadonly
+
         private readonly string connectionString;
+
         public Repo(IConfiguration config)
         {
             connectionString = config.GetConnectionString("Default");
         }
-        #endregion
+
+        #endregion PrivateReadonly
 
         #region Tweet
+
         public List<ListPost> GetAllTweets()
         {
             SqlConnection con = new(connectionString);
@@ -54,7 +56,6 @@ namespace Twitter19.Repo
                 }
                 catch (Exception)
                 {
-
                 }
                 Posts.Add(listPost);
             }
@@ -87,6 +88,7 @@ namespace Twitter19.Repo
             Posts.Reverse();
             return Posts;
         }
+
         public List<bool> Sentiment(int uid, List<ListPost> posts)
         {
             SqlConnection con = new(connectionString);
@@ -111,6 +113,7 @@ namespace Twitter19.Repo
             Sentiment.Reverse();
             return Sentiment;
         }
+
         public List<int> SentimentCount(List<ListPost> posts)
         {
             SqlConnection con = new(connectionString);
@@ -126,6 +129,7 @@ namespace Twitter19.Repo
             }
             return SentimentCount;
         }
+
         public List<int> CommentCount(List<ListPost> posts)
         {
             SqlConnection con = new(connectionString);
@@ -141,6 +145,7 @@ namespace Twitter19.Repo
             }
             return CommentCount;
         }
+
         public void SetSentiment(int uid, int tid)
         {
             SqlConnection con = new(connectionString);
@@ -152,6 +157,7 @@ namespace Twitter19.Repo
             cmd.ExecuteNonQuery();
             con.Close();
         }
+
         public void PostTweet(int uid, string tweet, IFormFile img)
         {
             SqlConnection con = new(connectionString);
@@ -191,9 +197,11 @@ namespace Twitter19.Repo
                 con.Close();
             }
         }
-        #endregion
+
+        #endregion Tweet
 
         #region Comment
+
         public List<ListPost> GetSinglePost(int id)
         {
             SqlConnection con = new(connectionString);
@@ -252,6 +260,7 @@ namespace Twitter19.Repo
             Posts.Reverse();
             return Posts;
         }
+
         public List<ListComment> GetComments(int tid)
         {
             SqlConnection con = new(connectionString);
@@ -290,6 +299,7 @@ namespace Twitter19.Repo
             Comments.Reverse();
             return Comments;
         }
+
         public List<int> CommentSentimentCount(List<ListComment> comments, int tid)
         {
             SqlConnection con = new(connectionString);
@@ -306,6 +316,7 @@ namespace Twitter19.Repo
             }
             return CommentSentimentCount;
         }
+
         public List<bool> CommentSentiment(int uid, int tid)
         {
             SqlConnection con = new(connectionString);
@@ -331,6 +342,7 @@ namespace Twitter19.Repo
             CommentSentiment.Reverse();
             return CommentSentiment;
         }
+
         public void PostComment(int uid, int tid, string comment)
         {
             SqlConnection con = new(connectionString);
@@ -371,6 +383,7 @@ namespace Twitter19.Repo
                 con.Close();
             }
         }
+
         public void SetCommentSentiment(int uid, int cid)
         {
             SqlConnection con = new(connectionString);
@@ -382,9 +395,11 @@ namespace Twitter19.Repo
             cmd.ExecuteNonQuery();
             con.Close();
         }
-        #endregion
+
+        #endregion Comment
 
         #region Login
+
         public int Login(string email, string password)
         {
             SqlConnection con = new(connectionString);
@@ -417,9 +432,13 @@ namespace Twitter19.Repo
             con.Close();
             return 0;
         }
-        #endregion  
+
+        #endregion Login
+
+
 
         #region Signup
+
         public int Signup(string email, string password, string name)
         {
             SqlConnection con = new(connectionString);
@@ -448,8 +467,8 @@ namespace Twitter19.Repo
             {
                 return ID;
             }
-
         }
+
         public void DefaultSentiment(int id)
         {
             SqlConnection con = new(connectionString);
@@ -479,6 +498,7 @@ namespace Twitter19.Repo
             //}
             con.Close();
         }
+
         public void DefaultCommentSentiment(int id)
         {
             SqlConnection con = new(connectionString);
@@ -514,9 +534,11 @@ namespace Twitter19.Repo
                 con.Close();
             }
         }
-        #endregion
+
+        #endregion Signup
 
         #region Profile
+
         public ListProfile GetProfile(int id)
         {
             SqlConnection con = new(connectionString);
@@ -540,7 +562,6 @@ namespace Twitter19.Repo
                 }
                 catch (Exception)
                 {
-
                 }
                 return listProfiles;
             }
@@ -558,13 +579,13 @@ namespace Twitter19.Repo
             //    }
             //    catch (Exception)
             //    {
-
             //    }
             //    return listProfiles;
             //}
             con.Close();
             return null;
         }
+
         public int CountTweets(int id)
         {
             SqlConnection con = new(connectionString);
@@ -576,6 +597,7 @@ namespace Twitter19.Repo
             con.Close();
             return TweetsCount;
         }
+
         public void EditProfile(int id, IFormFile hImg, IFormFile pImg, string bio)
         {
             SqlConnection con = new(connectionString);
@@ -591,6 +613,7 @@ namespace Twitter19.Repo
             cmd.ExecuteNonQuery();
             con.Close();
         }
+
         public void Follow(int uid, int pid)
         {
             SqlConnection con = new(connectionString);
@@ -602,9 +625,11 @@ namespace Twitter19.Repo
             cmd.ExecuteNonQuery();
             con.Close();
         }
-        #endregion
+
+        #endregion Profile
 
         #region Message
+
         public List<Profiles> GetFollowers(int uid)
         {
             SqlConnection con = new(connectionString);
@@ -640,6 +665,7 @@ namespace Twitter19.Repo
             con.Close();
             return profiles;
         }
+
         public void CreateMessage(int uid, int fid, string message)
         {
             try
@@ -749,6 +775,7 @@ namespace Twitter19.Repo
                 con.Close();
             }
         }
-        #endregion
+
+        #endregion Message
     }
 }
