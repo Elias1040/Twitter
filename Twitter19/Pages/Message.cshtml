@@ -36,7 +36,7 @@
                             {
                                 <li class="message1 m-2">
                                     <div class="divmessage1">
-                                        <p style="margin-left: 10px; margin-bottom: 0;">@item.Message</p>
+                                        <span style="margin: 0; max-width: 225px;" class="text-break">@item.Message</span>
                                     </div>
                                 </li>
                             }
@@ -44,14 +44,13 @@
                             {
                                 <li class="message2 m-2">
                                     <div class="divmessage2">
-                                        <p style="margin-left: 10px; margin-bottom: 0;">@item.Message</p>
+                                        <span style="margin: 0; max-width: 225px;" class="text-break">@item.Message</span>
                                     </div>
                                 </li>
-                            }   
+                            }
                     }
                 </ul>
             </div>
-        </div>
         <div class="container w-100" style="align-self: end">
             <div class="row">&nbsp;</div>
             <div class="row">
@@ -64,6 +63,7 @@
                     <input type="button" id="sendButton" value="Send Message" />
                 </div>
             </div>
+        </div>
         </div>
     }
 </div>
@@ -98,11 +98,13 @@
                 document.getElementById("messagesList").appendChild(li);
                 var div = document.createElement("div");
                 li.appendChild(div);
-                var p = document.createElement("p");
+                var p = document.createElement("span");
+                p.style.margin = "0";
+                p.style.maxWidth = "225px";
+                p.style.wordWrap = "break-word"
+                p.style.wordBreak = "break-word";
                 div.appendChild(p);
                 p.textContent = message;
-                p.style.marginLeft = "10px";
-                p.style.marginBottom = "0";
                 li.classList.add("message1");
                 div.classList.add("divmessage1");
              }
@@ -110,19 +112,40 @@
                 joined = join;
                 var li = document.createElement("li");
                 li.classList.add("m-2")
+                li.classList.add("message2");
                 document.getElementById("messagesList").appendChild(li);
                 var div = document.createElement("div");
+                div.classList.add("divmessage2");
                 li.appendChild(div);
-                var p = document.createElement("p");
+                var p = document.createElement("span");
+                p.style.margin = "0";
+                p.style.maxWidth = "225px";
+                p.style.wordWrap = "break-word"
+                p.style.wordBreak = "break-word";
                 div.appendChild(p);
                 p.textContent = message;
-                p.style.marginLeft = "10px";
-                p.style.marginBottom = "0";
-                li.classList.add("message2");
-                div.classList.add("divmessage2");
              }
          });
 
+         const node = document.getElementById("messageInput");
+node.addEventListener("keyup", function(event) {
+    if (event.key === "Enter") {
+        var userID = @HttpContext.Session.GetInt32("ID");
+             var followerID = @Model.FollowerRoomID;
+             var message = document.getElementById("messageInput").value;
+             if (joined){
+                 connection.invoke("SendMessageToGroup", userID, followerID, message, true).catch(function (err) {
+                 return console.error(err.toString());
+                 });
+             }
+             else{
+                 connection.invoke("SendMessageToGroup", userID, followerID, message, false).catch(function (err) {
+                 return console.error(err.toString());
+                 });
+             }
+             event.preventDefault();
+    }
+});
 
          document.getElementById("sendButton").addEventListener("click", function (event) {
              var userID = @HttpContext.Session.GetInt32("ID");
@@ -140,8 +163,6 @@
              }
              event.preventDefault();
          });
-
-         //return connection
 
     @*var con = window.addEventListener("load", myInit, true); function myInit() {
         LeaveGroup(@Model.RoomID)

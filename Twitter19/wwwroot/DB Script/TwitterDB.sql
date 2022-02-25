@@ -98,13 +98,6 @@ CREATE TABLE [dbo].[Messages](
 )
 GO
 
-create table ChatRooms(
-	ID int identity(1, 1) not null,
-	UID1 int not null,
-	UID2 int not null
-)
-go
-
 alter table [Messages]
 add foreign key (UID, FID) references Followers(UID, FID)
 go
@@ -258,13 +251,6 @@ go
 		where UID = @UID and FID = @FID 
 	go
 
-	create procedure GetRoomID
-	@UID int, @FID int
-	as
-		select ID from ChatRooms
-		where UID1 = @UID and UID2 = @FID
-	go
-
 	------------SP Create------------
 
 	CREATE procedure UserSignup
@@ -307,12 +293,6 @@ go
 		values (@UID, @FID, @Message, getdate())
 	go
 
-	create procedure CreateRoom
-	@UID int, @FID int
-	as
-		insert into ChatRooms(UID1, UID2)
-		values (@UID, @FID)
-	go
 	------------SP Update------------
 
 	create procedure UpdateFollowerID

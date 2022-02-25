@@ -344,29 +344,35 @@ pre {
     display: flex;
     justify-content: right;
     list-style: none;
+    height: auto;
 }
 
 .divmessage1 {
     background-color: cyan;
     color: white;
     text-decoration: none;
-    width: 120px;
+    min-width: 120px;
+    max-width: 225px;
     margin-right: 22px;
-    padding: 8px;
     border-radius: 20px;
+    height: auto;
+    padding: 10px 15px;
 }
 
 .message2 {
     display: flex;
     justify-content: left;
     list-style: none;
+    height: auto;
 }
 
 .divmessage2 {
     text-decoration: none;
-    width: 120px;
-    padding: 8px;
+    min-width: 120px;
+    max-width: 225px;
+    height: auto;
     border-radius: 20px;
     background-color: rgba(0, 0, 0, 0.08);
+    padding: 10px 15px;
 }
 /*#endregion*/
