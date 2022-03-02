@@ -348,7 +348,7 @@ pre {
 }
 
 .divmessage1 {
-    background-color: cyan;
+    background-color: #2da9f1;
     color: white;
     text-decoration: none;
     min-width: 120px;
@@ -374,5 +374,23 @@ pre {
     border-radius: 20px;
     background-color: rgba(0, 0, 0, 0.08);
     padding: 10px 15px;
+}
+
+.MessageDate {
+    font-size: 14px;
+    color: gray;
+    font-weight: 600;
+    margin-bottom: 5px;
+    text-align: right;
+    margin-right: 32px;
+}
+
+.MessageInput{
+    width: 80%;
+    border: 1px solid lightgray;
+}
+
+.MessageInputSend{
+    width: 15% !important;
 }
 /*#endregion*/

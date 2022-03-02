@@ -8,6 +8,7 @@ namespace Twitter19.Classes
         public string Message { get; set; }
         public string Image { get; set; }
         public string Name { get; set; }
+        public string PImg { get; set; }
         public string Date { get; set; }
         public int TweetID { get; set; }
     }
@@ -64,7 +65,7 @@ namespace Twitter19.Classes
             else if (now <= TimeSpan.FromDays(30))
             {
                 return now.Days > 1 ?
-                    String.Format($"{now.Days} day/s") :
+                    String.Format($"{now.Days} days") :
                     "Yesterday";
             }
             else if (now <= TimeSpan.FromDays(365))

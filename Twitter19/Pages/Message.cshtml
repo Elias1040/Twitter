@@ -1,9 +1,9 @@
 ﻿@page
 @using Microsoft.AspNetCore.Http
+@using Twitter19.Classes
 @model Twitter19.Pages.MessageModel
 @{
 }
-
 
 
 <div class="container border rounded-left" style="height: 700px; width: 300px; padding: 0; margin-left: 250px; margin-right: 0;">
@@ -14,7 +14,7 @@
     {
         <a asp-page="Message" onclick="" asp-route-id="@item.id" style="text-decoration: none; color: black;">
             <div class="border-top pb-3" style="padding-top: 10px">
-                <img class="d-inline-block rounded-circle ml-2 align-self-center" onerror="this.src = '/perm_identity_black_24dp.svg'" src="data:image/png;base64, @item.Img" width="50" height="50">
+                <img class="d-inline-block rounded-circle ml-2 align-self-center" onerror="this.src = '/perm_identity_black_24dp.svg'" src="data:image/png;base64, @item.Img" width="50" height="50" />
                 <div class="d-inline-flex align-items-center ml-2">
                     <h5 class="d-inline-block">@item.Name:</h5>
                 </div>
@@ -27,88 +27,105 @@
     @if (Model.FollowerRoomID != 0)
     {
         <div class="d-flex flex-column h-100">
-            <div class="w-100 h-100" style="overflow-y:scroll;">
+            <div class="w-100 h-100" id="MessageWindow" style="overflow-y:scroll;">
                 <ul id="messagesList" class="d-flex flex-column">
 
                     @foreach (var item in Model.Messages)
                     {
-                            @if (item.UserID == HttpContext.Session.GetInt32("ID"))
-                            {
-                                <li class="message1 m-2">
+                        @if (item.UserID == HttpContext.Session.GetInt32("ID"))
+                        {
+                            <li class="message1 m-2">
+                                @{
+                                    string date = new PostDate().Idk(item.Date);
+                                }
+                                <div class="d-flex flex-column">
+                                    <p class="MessageDate">@date</p>
                                     <div class="divmessage1">
                                         <span style="margin: 0; max-width: 225px;" class="text-break">@item.Message</span>
                                     </div>
-                                </li>
-                            }
-                            else
-                            {
-                                <li class="message2 m-2">
+                                </div>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="message2 m-2">
+                                @{
+                                    string date = new PostDate().Idk(item.Date);
+                                }
+                                <div class="d-flex flex-column">
+                                    <p class="MessageDate">@date</p>
                                     <div class="divmessage2">
                                         <span style="margin: 0; max-width: 225px;" class="text-break">@item.Message</span>
                                     </div>
-                                </li>
-                            }
+                                </div>
+                            </li>
+                        }
                     }
                 </ul>
             </div>
-        <div class="container w-100" style="align-self: end">
-            <div class="row">&nbsp;</div>
-            <div class="row">
-                <div class="col-2">Message</div>
-                <div class="col-4"><input type="text" id="messageInput" /></div>
-            </div>
-            <div class="row">&nbsp;</div>
-            <div class="row">
-                <div class="col-6">
-                    <input type="button" id="sendButton" value="Send Message" />
+            <div class="container w-100 border-top" style="align-self: end">
+                <div class="row">&nbsp;</div>
+                <div class="btn-group w-100">
+                    <input type="text" id="messageInput" class="d-inline-block MessageInput rounded pl-2" placeholder="Send Message" />
+                    <input type="button" id="sendButton" class="d-inline-block btn MessageInputSend btn-primary" value="Send" />
                 </div>
+                <div class="row">&nbsp;</div>
+
             </div>
-        </div>
         </div>
     }
 </div>
+
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
 <script>
     "use strict";
+        document.getElementById("MessageWindow").scrollTop = document.getElementById("MessageWindow").scrollHeight;
 
+        var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub", { skipNegotiation: true, transport: signalR.HttpTransportType.WebSockets }).build();
 
-         var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub", { skipNegotiation: true, transport: signalR.HttpTransportType.WebSockets }).build();
+        document.getElementById("sendButton").disabled = true;
 
-         document.getElementById("sendButton").disabled = true;
+        var joined = true;
 
-         var joined = true;
+        connection.start().then(function () {
+            document.getElementById("sendButton").disabled = false;
+        }).catch(function (err) {
+            return console.error(err.toString());
+        }).then(function () {
+            connection.invoke("JoinRoom", @HttpContext.Session.GetInt32("ID")).catch(function (err) {
+                joined = false;
+                console.log("a");
+                return console.error(err.toString());
+            });
+        });
 
-         connection.start().then(function () {
-             document.getElementById("sendButton").disabled = false;
-         }).catch(function (err) {
-             return console.error(err.toString());
-         }).then(function () {
-             connection.invoke("JoinRoom", @HttpContext.Session.GetInt32("ID")).catch(function (err) {
-                 joined = false;
-                 console.log("a");
-                 return console.error(err.toString());
-             });
-         });
-
-         connection.on("ReceiveMessage", function (message, join, userID) {
-             if (userID === @HttpContext.Session.GetInt32("ID")){
+        connection.on("ReceiveMessage", function (message, join, userID) {
+            if (userID === @HttpContext.Session.GetInt32("ID")){
                 joined = join;
                 var li = document.createElement("li");
                 li.classList.add("m-2")
+                li.classList.add("message1");
                 document.getElementById("messagesList").appendChild(li);
+                var div2 = document.createElement("div");
+                div2.classList.add("d-flex");
+                div2.classList.add("flex-column");
+                li.appendChild(div2);
+                var p2 = document.createElement("span");
+                p2.textContent = "Now";
+                p2.classList.add("MessageDate");
+                div2.appendChild(p2);
                 var div = document.createElement("div");
-                li.appendChild(div);
+                div2.appendChild(div)
                 var p = document.createElement("span");
+                p.textContent = message;
                 p.style.margin = "0";
                 p.style.maxWidth = "225px";
                 p.style.wordWrap = "break-word"
                 p.style.wordBreak = "break-word";
                 div.appendChild(p);
-                p.textContent = message;
-                li.classList.add("message1");
                 div.classList.add("divmessage1");
-             }
-             else {
+            }
+            else {
                 joined = join;
                 var li = document.createElement("li");
                 li.classList.add("m-2")
@@ -124,49 +141,50 @@
                 p.style.wordBreak = "break-word";
                 div.appendChild(p);
                 p.textContent = message;
-             }
-         });
+            }
+            document.getElementById("MessageWindow").scrollTop = document.getElementById("MessageWindow").scrollHeight;
+        });
 
-         const node = document.getElementById("messageInput");
-node.addEventListener("keyup", function(event) {
-    if (event.key === "Enter") {
+    const node = document.getElementById("messageInput");
+    node.addEventListener("keyup", function(event) {
+        if (event.key === "Enter") {
+            var userID = @HttpContext.Session.GetInt32("ID");
+            var followerID = @Model.FollowerRoomID;
+            var message = document.getElementById("messageInput").value;
+            if (joined){
+                connection.invoke("SendMessageToGroup", userID, followerID, message, true).catch(function (err) {
+                    return console.error(err.toString());
+                });
+            }
+            else{
+                connection.invoke("SendMessageToGroup", userID, followerID, message, false).catch(function (err) {
+                     return console.error(err.toString());
+                });
+            }
+            event.preventDefault();
+        }
+    });
+
+    document.getElementById("sendButton").addEventListener("click", function (event) {
         var userID = @HttpContext.Session.GetInt32("ID");
-             var followerID = @Model.FollowerRoomID;
-             var message = document.getElementById("messageInput").value;
-             if (joined){
-                 connection.invoke("SendMessageToGroup", userID, followerID, message, true).catch(function (err) {
-                 return console.error(err.toString());
-                 });
-             }
-             else{
-                 connection.invoke("SendMessageToGroup", userID, followerID, message, false).catch(function (err) {
-                 return console.error(err.toString());
-                 });
-             }
-             event.preventDefault();
-    }
-});
-
-         document.getElementById("sendButton").addEventListener("click", function (event) {
-             var userID = @HttpContext.Session.GetInt32("ID");
-             var followerID = @Model.FollowerRoomID;
-             var message = document.getElementById("messageInput").value;
-             if (joined){
-                 connection.invoke("SendMessageToGroup", userID, followerID, message, true).catch(function (err) {
-                 return console.error(err.toString());
-                 });
-             }
-             else{
-                 connection.invoke("SendMessageToGroup", userID, followerID, message, false).catch(function (err) {
-                 return console.error(err.toString());
-                 });
-             }
-             event.preventDefault();
-         });
+        var followerID = @Model.FollowerRoomID;
+        var message = document.getElementById("messageInput").value;
+        if (joined){
+            connection.invoke("SendMessageToGroup", userID, followerID, message, true).catch(function (err) {
+                return console.error(err.toString());
+            });
+        }
+        else{
+            connection.invoke("SendMessageToGroup", userID, followerID, message, false).catch(function (err) {
+                return console.error(err.toString());
+            });
+        }
+        event.preventDefault();
+    });
 
     @*var con = window.addEventListener("load", myInit, true); function myInit() {
         LeaveGroup(@Model.RoomID)
-        };*@
+    };*@
 
 
 </script>

@@ -43,6 +43,7 @@ namespace Twitter.Pages
         public List<int> SentimentCount { get; set; }
         public List<int> CommentSentimentCount { get; set; }
         public List<int> CommentCount { get; set; }
+        public ListProfile UserProfile { get; set; }
         public int TweetID { get; set; }
         #endregion
 
@@ -58,6 +59,7 @@ namespace Twitter.Pages
             #region Tweets
             int uid = (int)HttpContext.Session.GetInt32("ID");
             int tid = Convert.ToInt32(id);
+            UserProfile = _repo.GetProfile(uid);
             Posts = _repo.GetAllTweets();
             Sentiment = _repo.Sentiment(uid, Posts);
             SentimentCount = _repo.SentimentCount(Posts);
@@ -75,8 +77,6 @@ namespace Twitter.Pages
             #endregion
             return Page();
         }
-
-
 
         public IActionResult OnPostTweet()
         {

@@ -39,12 +39,28 @@ namespace Twitter19.Repo
             {
                 ListPost listPost = new ListPost();
                 listPost.Name = (string)item[0];
-                listPost.Message = (string)item[1];
-                listPost.TweetID = (int)item[2];
-                listPost.Date = new PostDate().Idk((DateTime)item[3]);
                 try
                 {
-                    MemoryStream ms = new MemoryStream((byte[])item[4]);
+                    MemoryStream ms = new MemoryStream((byte[])item[1]);
+                    Image img = Image.FromStream(ms);
+
+                    if (img.Width >= 75 || img.Height >= 75)
+                    {
+                        Image reImg = new Images().Resize(new Bitmap(img), new Size(75, 75));
+                        listPost.PImg = new Images().ConvertToB64(reImg);
+                    }
+                }
+                catch (Exception)
+                {
+
+                    
+                }
+                listPost.Message = (string)item[2];
+                listPost.TweetID = (int)item[3];
+                listPost.Date = new PostDate().Idk((DateTime)item[4]);
+                try
+                {
+                    MemoryStream ms = new MemoryStream((byte[])item[5]);
                     Image img = Image.FromStream(ms);
                     if (img.Width >= 500 || img.Height >= 500)
                     {
@@ -52,7 +68,7 @@ namespace Twitter19.Repo
                         listPost.Image = new Images().ConvertToB64(reImg);
                     }
                     else
-                        listPost.Image = Convert.ToBase64String((byte[])item[4]);
+                        listPost.Image = Convert.ToBase64String((byte[])item[5]);
                 }
                 catch (Exception)
                 {

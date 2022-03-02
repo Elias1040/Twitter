@@ -19,16 +19,19 @@ namespace Twitter19.Hubs
 
         public async Task SendMessageToGroup(int userID, int followerID, string message, bool join)
         {
-            if (!join)
+            if (message != string.Empty)
             {
-                await JoinRoom(userID).ConfigureAwait(false);
-                _repo.CreateMessage(userID, followerID, message);
-                await Clients.Groups(followerID.ToString(), userID.ToString()).SendAsync("ReceiveMessage", message, join, userID);
-            }
-            else
-            {
-                _repo.CreateMessage(userID, followerID, message);
-                await Clients.Groups(followerID.ToString(), userID.ToString()).SendAsync("ReceiveMessage", message, join, userID);
+                if (!join)
+                {
+                    await JoinRoom(userID).ConfigureAwait(false);
+                    _repo.CreateMessage(userID, followerID, message);
+                    await Clients.Groups(followerID.ToString(), userID.ToString()).SendAsync("ReceiveMessage", message, join, userID);
+                }
+                else
+                {
+                    _repo.CreateMessage(userID, followerID, message);
+                    await Clients.Groups(followerID.ToString(), userID.ToString()).SendAsync("ReceiveMessage", message, join, userID);
+                }
             }
         }
 

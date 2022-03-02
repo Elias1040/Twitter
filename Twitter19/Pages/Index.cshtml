@@ -5,6 +5,7 @@
 
 }
 @using Microsoft.AspNetCore.Http;
+@using Twitter19.Classes;
 <div class="d-inline-flex flex-column justify-content-center mcontainer">
     <div class="border rounded p-1 tweetCon d-block">
         <div class="text-left mb-3">
@@ -13,7 +14,10 @@
         <div>
             <form asp-page-handler="Tweet" method="post" class="form" enctype="multipart/form-data">
                 <div class="border-bottom pb-3">
-                    <img class="d-inline-block rounded-circle" src="~/photo4.jpg" alt="" height="75px" width="75px" />
+                    @{
+                        string image = new Images().ConvertToB64(Model.UserProfile.PImg);
+                    }
+                    <img class="d-inline-block rounded-circle" src="data:image/png;base64, @image" alt="" height="75" width="75" />
                     <div class="d-inline-flex align-items-center mt-1">
                         <textarea class="border-0 d-block h5" style="max-width: 520px" id="post" placeholder="What's happening?" asp-for="Tweet"></textarea>
                     </div>
@@ -25,7 +29,7 @@
                 <div class="form-input mt-2">
                     <label for="file-ip-1"></label>
                     <input type="file" asp-for="Img" id="file-ip-1" accept="image/*" onchange="showPreview(event, this.id);">
-                    <button type="submit" class="d-inline-block btn btn-info rounded-pill mb-3 pl-4 pr-4 float-right tweetButton">Tweet</button>
+                    <button type="submit" class="d-inline-block btn btn-info rounded-pill mb-3 pl-4 pr-4 float-right tweetButton text-white">Tweet</button>
                     @*<button type="button" onclick="hidePreview()" class="d-inline-block btn btn-info rounded-pill mr-3 mb-3 pl-4 pr-4 float-right">Delete Picture</button>*@
                 </div>
             </form>
@@ -37,7 +41,7 @@
             {
                 <div class="tablerow">
                     <div class="border-bottom pb-3" style="padding-top: 10px">
-                        <img class="d-inline-block rounded-circle ml-2 mt-2" src="~/photo4.jpg" alt="" height="75px" width="75px" />
+                        <img class="d-inline-block rounded-circle ml-2 mt-2" src="data:image/png;base64, @Model.Posts[i].PImg" alt="" height="75" width="75" />
                         <div class="d-inline-flex flex-column ml-2">
                             <h4 class="d-inline-block">@Model.Posts[i].Name</h4>
                             <div class="d-inline-flex align-items-center mt-1">
