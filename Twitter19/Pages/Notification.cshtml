@@ -1,0 +1,21 @@
+﻿@page
+@model Twitter19.Pages.NotificationModel
+@{
+}
+<div class="container border rounded-left" style="height: 700px; width: 700px; padding: 0; margin-left: 250px; margin-right: 0;">
+    <form method="post">
+        <input type="text" asp-for="Name" class="border rounded m-2" />
+    </form>
+    @foreach (var item in Model.Messages)
+    {
+        <a asp-page="Message" onclick="" asp-route-id="@item.UserID" style="text-decoration: none; color: black;">
+            <div class="border-top pb-3" style="padding-top: 10px">
+                <img class="d-inline-block rounded-circle ml-2 align-self-center" onerror="this.src = '/perm_identity_black_24dp.svg'" src="data:image/png;base64, @*@item.Img*@" width="50" height="50" />
+                <div class="d-inline-flex align-items-center ml-2">
+                    <h5 class="d-inline-block">@*@item.Name:*@</h5>
+                </div>
+                <p class="d-inline-block mr-2" style="color: darkgray; font-weight: 600; font-size: 17px;">@item.Message</p>
+            </div>
+        </a>
+    }
+</div>

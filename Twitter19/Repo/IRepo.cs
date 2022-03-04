@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Twitter19.Classes;
 
 namespace Twitter19.Repo
@@ -50,6 +47,11 @@ namespace Twitter19.Repo
         List<ListMessages> GetMessages(int uid, int fid);
         int? GetRoomID (int uid, int fid);
         void CreateRoom(int uid, int fid);
+        #endregion
+
+        #region Notification
+        List<ListMessages> GetNotifications(List<Profiles> profiles, int id);
+        void SetRead(int userID, int followerID);
         #endregion
     }
 }

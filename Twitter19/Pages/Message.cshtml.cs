@@ -12,7 +12,7 @@ namespace Twitter19.Pages
     {
         #region privateReadonly
 
-        private readonly IRepo _repo;
+        public readonly IRepo _repo;
 
         public MessageModel(IRepo repo)
         {

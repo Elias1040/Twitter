@@ -18,7 +18,7 @@
                 <div class="d-inline-flex align-items-center ml-2">
                     <h5 class="d-inline-block">@item.Name:</h5>
                 </div>
-                <p class="d-inline-block float-right mr-2" style="color: darkgray; font-weight: 600; font-size: 17px;">9 minute/s</p>
+                <p class="d-inline-block mr-2" id="chatID_@item.id" style="color: darkgray; font-weight: 600; font-size: 17px;">never</p>
             </div>
         </a>
     }
@@ -99,7 +99,7 @@
             });
         });
 
-        connection.on("ReceiveMessage", function (message, join, userID) {
+        connection.on("ReceiveMessage", function (message, join, userID, followerID) {
             if (userID === @HttpContext.Session.GetInt32("ID")){
                 joined = join;
                 var li = document.createElement("li");
@@ -143,7 +143,9 @@
                 p.textContent = message;
             }
             document.getElementById("MessageWindow").scrollTop = document.getElementById("MessageWindow").scrollHeight;
+            document.getElementById('chatID_' + followerID).textContent = message
         });
+        clearInterval(1)
 
     const node = document.getElementById("messageInput");
     node.addEventListener("keyup", function(event) {
@@ -181,6 +183,11 @@
         }
         event.preventDefault();
     });
+    window.addEventListener("click", function(event){
+        var userID = @HttpContext.Session.GetInt32("ID");
+        var followerID = @Model.FollowerRoomID;
+        connection.invoke("SetRead", userID, followerID)
+    })
 
     @*var con = window.addEventListener("load", myInit, true); function myInit() {
         LeaveGroup(@Model.RoomID)

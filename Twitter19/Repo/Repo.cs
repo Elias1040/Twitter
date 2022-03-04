@@ -53,7 +53,7 @@ namespace Twitter19.Repo
                 catch (Exception)
                 {
 
-                    
+
                 }
                 listPost.Message = (string)item[2];
                 listPost.TweetID = (int)item[3];
@@ -793,5 +793,52 @@ namespace Twitter19.Repo
         }
 
         #endregion Message
+
+        #region Notification
+        public List<ListMessages> GetNotifications(List<Profiles> profiles, int id)
+        {
+            SqlConnection con = new(connectionString);
+            List<ListMessages> list = new();
+            foreach (var item in profiles)
+            {
+                SqlCommand cmd = new("GetNotifications", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@uid", item.id);
+                cmd.Parameters.AddWithValue("@fid", id);
+                con.Open();
+                List<ListMessages> notification = new();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int temp = reader.GetInt32("UID");
+                    if (reader.GetInt32("UID") != id)
+                    {
+                        ListMessages listMessages = new ListMessages()
+                        {
+                            UserID = reader.GetInt32("UID"),
+                            Message = reader.GetString("Message"),
+                            Date = reader.GetDateTime("Date")
+                        };
+                        notification.Add(listMessages);
+                    }
+                }
+                con.Close();
+                try
+                {
+                    notification.Sort((x, y) => DateTime.Compare(y.Date, x.Date));
+                    list.Add(notification[0]);
+                }
+                catch (Exception)
+                {
+                }
+            }
+            return list;
+        }
+
+        public void SetRead(int userID, int followerID)
+        {
+
+        }
+        #endregion
     }
 }

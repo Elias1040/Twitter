@@ -25,12 +25,12 @@ namespace Twitter19.Hubs
                 {
                     await JoinRoom(userID).ConfigureAwait(false);
                     _repo.CreateMessage(userID, followerID, message);
-                    await Clients.Groups(followerID.ToString(), userID.ToString()).SendAsync("ReceiveMessage", message, join, userID);
+                    await Clients.Groups(followerID.ToString(), userID.ToString()).SendAsync("ReceiveMessage", message, join, userID, followerID);
                 }
                 else
                 {
                     _repo.CreateMessage(userID, followerID, message);
-                    await Clients.Groups(followerID.ToString(), userID.ToString()).SendAsync("ReceiveMessage", message, join, userID);
+                    await Clients.Groups(followerID.ToString(), userID.ToString()).SendAsync("ReceiveMessage", message, join, userID, followerID);
                 }
             }
         }
@@ -44,6 +44,11 @@ namespace Twitter19.Hubs
         public async Task LeaveRoom(int roomID)
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomID.ToString());
+        }
+
+        public void SetRead(int userID, int followerID)
+        {
+            _repo.SetRead(userID, followerID);
         }
     }
 }

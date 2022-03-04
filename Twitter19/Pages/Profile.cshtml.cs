@@ -1,16 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Twitter;
 using Twitter19.Classes;
 using Twitter19.Repo;
 
